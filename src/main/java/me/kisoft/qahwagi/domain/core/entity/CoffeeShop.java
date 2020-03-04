@@ -7,7 +7,6 @@ package me.kisoft.qahwagi.domain.core.entity;
 
 import java.util.List;
 import lombok.Data;
-import me.kisoft.qahwagi.domain.core.valo.MenuItem;
 import me.kisoft.qahwagi.event.DomainEvent;
 import me.kisoft.qahwagi.event.EventBus;
 

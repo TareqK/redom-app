@@ -7,7 +7,6 @@ package me.kisoft.qahwagi.domain.core.entity;
 
 import java.util.List;
 import lombok.Data;
-import me.kisoft.qahwagi.domain.core.valo.MenuItem;
 import me.kisoft.qahwagi.event.DomainEvent;
 import me.kisoft.qahwagi.event.EventBus;
 
@@ -19,8 +18,8 @@ import me.kisoft.qahwagi.event.EventBus;
 public class Order {
 
   private String id;
-  private String customerId;
-  private String coffeeShopId;
+  private Customer customer;
+  private CoffeeShop coffeeShop;
   private List<MenuItem> orderedItems;
 
   public void postCreated() {

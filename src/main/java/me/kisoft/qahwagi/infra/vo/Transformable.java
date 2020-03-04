@@ -3,18 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package me.kisoft.qahwagi.domain.core.valo;
-
-import lombok.Data;
+package me.kisoft.qahwagi.infra.vo;
 
 /**
  *
  * @author tareq
  */
-@Data
-public class MenuItem {
+public interface Transformable<T> {
 
-  private String name;
-  private String description;
-  private double price;
+  public T toDomainEntity();
+
+  public Transformable fromDomainEntity(T domainEntity);
+
 }

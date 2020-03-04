@@ -17,8 +17,7 @@ import me.kisoft.qahwagi.event.EventBus;
 public class Barista {
 
   private String id;
-  private String name;
-  private String worksAtCoffeeShop;
+  private CoffeeShop coffeeShop;
 
   public void postCreated() {
     EventBus.getInstance().post(new DomainEvent("baristaCreated", this));

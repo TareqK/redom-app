@@ -17,8 +17,6 @@ import me.kisoft.qahwagi.event.EventBus;
 public class Customer {
 
   private String id;
-  private String name;
-  private String telephoneNumber;
 
   public void postCreated() {
     EventBus.getInstance().post(new DomainEvent("customerCreated", this));
