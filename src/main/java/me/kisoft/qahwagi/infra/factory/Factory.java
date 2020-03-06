@@ -3,12 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package me.kisoft.qahwagi.infra.core.repo;
+package me.kisoft.qahwagi.infra.factory;
 
 /**
  *
  * @author tareq
  */
-public class RepoImpl {
+public interface Factory<T> {
 
+  T get();
 }

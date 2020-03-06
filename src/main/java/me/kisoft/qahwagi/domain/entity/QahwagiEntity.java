@@ -3,13 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package me.kisoft.qahwagi.infra.core.factory;
+package me.kisoft.qahwagi.domain.entity;
 
 /**
  *
  * @author tareq
  */
-public interface Factory<T> {
+public interface QahwagiEntity {
 
-  T get();
+  void postCreated();
+
+  void postUpdated();
+
+  void postDeleted();
+
 }

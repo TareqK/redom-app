@@ -5,11 +5,13 @@
  */
 package me.kisoft.qahwagi.infra.vo;
 
+import me.kisoft.qahwagi.domain.entity.QahwagiEntity;
+
 /**
  *
  * @author tareq
  */
-public interface Transformable<T> {
+public interface Transformable<T extends QahwagiEntity> {
 
   public T toDomainEntity();
 

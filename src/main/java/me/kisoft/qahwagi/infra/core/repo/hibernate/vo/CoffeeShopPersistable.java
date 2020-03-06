@@ -3,17 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package me.kisoft.qahwagi.domain.core.repo.hibernate.vo;
+package me.kisoft.qahwagi.infra.core.repo.hibernate.vo;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.Entity;
 import lombok.Data;
 import me.kisoft.qahwagi.domain.core.entity.CoffeeShop;
-import me.kisoft.qahwagi.infra.vo.Transformable;
+import me.kisoft.qahwagi.infra.repo.hibernate.vo.HibernatePersistable;
 import org.apache.commons.lang3.math.NumberUtils;
 
 /**
@@ -21,11 +19,9 @@ import org.apache.commons.lang3.math.NumberUtils;
  * @author tareq
  */
 @Data
-public class CoffeeShopPersistable implements Transformable<CoffeeShop> {
+@Entity
+public class CoffeeShopPersistable extends HibernatePersistable<CoffeeShop> {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private Long id;
   private String name;
   private double longitude;
   private double latitude;
@@ -37,7 +33,7 @@ public class CoffeeShopPersistable implements Transformable<CoffeeShop> {
   @Override
   public CoffeeShop toDomainEntity() {
     CoffeeShop cs = new CoffeeShop();
-    cs.setId(String.valueOf(id));
+    cs.setId(String.valueOf(getId()));
     cs.setName(name);
     cs.setLongitude(longitude);
     cs.setLatitude(latitude);
@@ -51,7 +47,7 @@ public class CoffeeShopPersistable implements Transformable<CoffeeShop> {
 
   @Override
   public CoffeeShopPersistable fromDomainEntity(CoffeeShop domainEntity) {
-    this.id = NumberUtils.toLong(domainEntity.getId());
+    this.setId(NumberUtils.toLong(domainEntity.getId()));
     this.name = domainEntity.getName();
     this.longitude = domainEntity.getLongitude();
     this.latitude = domainEntity.getLatitude();

@@ -1,0 +1,53 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package me.kisoft.qahwagi.infra.auth.repo.hibernate.vo;
+
+import javax.persistence.Entity;
+import lombok.Data;
+import me.kisoft.qahwagi.domain.auth.entity.User;
+import me.kisoft.qahwagi.domain.auth.entity.UserRole;
+import me.kisoft.qahwagi.infra.repo.hibernate.vo.HibernatePersistable;
+import me.kisoft.qahwagi.infra.vo.Transformable;
+import org.apache.commons.lang3.math.NumberUtils;
+
+/**
+ *
+ * @author tareq
+ */
+@Data
+@Entity
+public class UserPersistable extends HibernatePersistable<User> {
+
+  private String username;
+  private String password;
+  private UserRole userRole;
+  private String name;
+  private String telephoneNumber;
+
+  @Override
+  public User toDomainEntity() {
+    User u = new User();
+    u.setId(String.valueOf(getId()));
+    u.setUsername(username);
+    u.setPassword(password);
+    u.setUserRole(userRole);
+    u.setName(name);
+    u.setTelephoneNumber(telephoneNumber);
+    return u;
+  }
+
+  @Override
+  public Transformable fromDomainEntity(User domainEntity) {
+    setId(NumberUtils.toLong(domainEntity.getId()));
+    this.username = domainEntity.getUsername();
+    this.password = domainEntity.getPassword();
+    this.userRole = domainEntity.getUserRole();
+    this.name = domainEntity.getName();
+    this.telephoneNumber = domainEntity.getTelephoneNumber();
+    return this;
+  }
+
+}

@@ -14,4 +14,5 @@ import me.kisoft.qahwagi.repo.CrudRepository;
  */
 public interface UserRepository extends CrudRepository<User> {
 
+  User getUserByUsername(String username);
 }

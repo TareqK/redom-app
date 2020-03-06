@@ -6,6 +6,7 @@
 package me.kisoft.qahwagi.domain.auth.entity;
 
 import lombok.Data;
+import me.kisoft.qahwagi.domain.entity.QahwagiEntity;
 import me.kisoft.qahwagi.event.DomainEvent;
 import me.kisoft.qahwagi.event.EventBus;
 
@@ -14,7 +15,7 @@ import me.kisoft.qahwagi.event.EventBus;
  * @author tareq
  */
 @Data
-public class User {
+public class User implements QahwagiEntity {
 
   private String id;
   private String username;
@@ -23,14 +24,17 @@ public class User {
   private String name;
   private String telephoneNumber;
 
+  @Override
   public void postCreated() {
     EventBus.getInstance().post(new DomainEvent("userCreated", this));
   }
 
+  @Override
   public void postUpdated() {
     EventBus.getInstance().post(new DomainEvent("userUpdated", this));
   }
 
+  @Override
   public void postDeleted() {
     EventBus.getInstance().post(new DomainEvent("userDeleted", this));
   }

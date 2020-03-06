@@ -7,6 +7,7 @@ package me.kisoft.qahwagi.domain.core.entity;
 
 import java.util.List;
 import lombok.Data;
+import me.kisoft.qahwagi.domain.entity.QahwagiEntity;
 import me.kisoft.qahwagi.event.DomainEvent;
 import me.kisoft.qahwagi.event.EventBus;
 
@@ -15,7 +16,7 @@ import me.kisoft.qahwagi.event.EventBus;
  * @author tareq
  */
 @Data
-public class CoffeeShop {
+public class CoffeeShop implements QahwagiEntity {
 
   private String id;
   private String name;
@@ -26,14 +27,17 @@ public class CoffeeShop {
   private boolean takingOrders;
   private List<MenuItem> offerings;
 
+  @Override
   public void postCreated() {
     EventBus.getInstance().post(new DomainEvent("coffeeShopCreated", this));
   }
 
+  @Override
   public void postUpdated() {
     EventBus.getInstance().post(new DomainEvent("coffeeShopUpdated", this));
   }
 
+  @Override
   public void postDeleted() {
     EventBus.getInstance().post(new DomainEvent("coffeeShopDeleted", this));
   }
