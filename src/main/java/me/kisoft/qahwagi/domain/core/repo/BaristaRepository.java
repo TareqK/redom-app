@@ -6,7 +6,7 @@
 package me.kisoft.qahwagi.domain.core.repo;
 
 import me.kisoft.qahwagi.domain.core.entity.Barista;
-import me.kisoft.qahwagi.repo.CrudRepository;
+import me.kisoft.qahwagi.domain.repo.CrudRepository;
 
 /**
  *

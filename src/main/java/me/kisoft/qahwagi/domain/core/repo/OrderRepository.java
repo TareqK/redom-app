@@ -8,7 +8,7 @@ package me.kisoft.qahwagi.domain.core.repo;
 import java.util.Date;
 import java.util.List;
 import me.kisoft.qahwagi.domain.core.entity.Order;
-import me.kisoft.qahwagi.repo.CrudRepository;
+import me.kisoft.qahwagi.domain.repo.CrudRepository;
 
 /**
  *

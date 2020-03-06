@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package me.kisoft.qahwagi.event;
+package me.kisoft.qahwagi.domain.event;
 
 import org.dizitart.jbus.JBus;
 

@@ -19,7 +19,7 @@ import javax.persistence.criteria.Root;
 import me.kisoft.qahwagi.domain.entity.QahwagiEntity;
 import me.kisoft.qahwagi.infra.factory.EntityManagerFactory;
 import me.kisoft.qahwagi.infra.repo.hibernate.vo.HibernatePersistable;
-import me.kisoft.qahwagi.repo.CrudRepository;
+import me.kisoft.qahwagi.domain.repo.CrudRepository;
 
 /**
  *

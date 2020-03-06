@@ -6,7 +6,7 @@
 package me.kisoft.qahwagi.domain.auth.repo;
 
 import me.kisoft.qahwagi.domain.auth.entity.User;
-import me.kisoft.qahwagi.repo.CrudRepository;
+import me.kisoft.qahwagi.domain.repo.CrudRepository;
 
 /**
  *

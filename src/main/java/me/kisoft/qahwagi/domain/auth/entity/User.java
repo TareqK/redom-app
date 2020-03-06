@@ -7,8 +7,8 @@ package me.kisoft.qahwagi.domain.auth.entity;
 
 import lombok.Data;
 import me.kisoft.qahwagi.domain.entity.QahwagiEntity;
-import me.kisoft.qahwagi.event.DomainEvent;
-import me.kisoft.qahwagi.event.EventBus;
+import me.kisoft.qahwagi.domain.event.DomainEvent;
+import me.kisoft.qahwagi.domain.event.EventBus;
 
 /**
  *

@@ -7,7 +7,7 @@ package me.kisoft.qahwagi.domain.core.repo;
 
 import java.util.List;
 import me.kisoft.qahwagi.domain.core.entity.CoffeeShop;
-import me.kisoft.qahwagi.repo.CrudRepository;
+import me.kisoft.qahwagi.domain.repo.CrudRepository;
 
 /**
  *

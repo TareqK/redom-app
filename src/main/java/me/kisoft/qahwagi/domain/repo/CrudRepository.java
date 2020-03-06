@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package me.kisoft.qahwagi.repo;
+package me.kisoft.qahwagi.domain.repo;
 
 import java.util.List;
 
