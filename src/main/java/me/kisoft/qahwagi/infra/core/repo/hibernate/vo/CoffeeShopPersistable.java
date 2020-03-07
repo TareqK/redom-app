@@ -8,7 +8,10 @@ package me.kisoft.qahwagi.infra.core.repo.hibernate.vo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import lombok.Data;
 import me.kisoft.qahwagi.domain.core.entity.CoffeeShop;
 import me.kisoft.qahwagi.infra.repo.hibernate.vo.HibernatePersistable;
@@ -28,7 +31,19 @@ public class CoffeeShopPersistable extends HibernatePersistable<CoffeeShop> {
   private String telephoneNumber;
   private double servingRadius;
   private boolean takingOrders;
+
+  @OneToOne(cascade = CascadeType.ALL)
+  private BaristaPersistable barista;
+
+  @OneToMany(cascade = CascadeType.ALL)
   private List<MenuItemPersistable> offerings = new ArrayList();
+
+  public CoffeeShopPersistable(CoffeeShop domainEntity) {
+    super(domainEntity);
+  }
+
+  public CoffeeShopPersistable() {
+  }
 
   @Override
   public CoffeeShop toDomainEntity() {
@@ -46,7 +61,7 @@ public class CoffeeShopPersistable extends HibernatePersistable<CoffeeShop> {
   }
 
   @Override
-  public CoffeeShopPersistable fromDomainEntity(CoffeeShop domainEntity) {
+  protected CoffeeShopPersistable toPersistable(CoffeeShop domainEntity) {
     this.setId(NumberUtils.toLong(domainEntity.getId()));
     this.name = domainEntity.getName();
     this.longitude = domainEntity.getLongitude();
@@ -55,7 +70,7 @@ public class CoffeeShopPersistable extends HibernatePersistable<CoffeeShop> {
     this.servingRadius = domainEntity.getServingRadius();
     this.takingOrders = domainEntity.isTakingOrders();
     domainEntity.getOfferings().parallelStream().forEach(cnsmr -> {
-      this.offerings.add(new MenuItemPersistable().fromDomainEntity(cnsmr));
+      this.offerings.add(new MenuItemPersistable(cnsmr));
     });
     return this;
   }

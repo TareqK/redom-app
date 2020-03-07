@@ -5,16 +5,70 @@
  */
 package me.kisoft.qahwagi.infra.core.repo.hibernate;
 
+import javax.persistence.NoResultException;
 import me.kisoft.qahwagi.domain.core.entity.Barista;
 import me.kisoft.qahwagi.domain.core.repo.BaristaRepository;
 import me.kisoft.qahwagi.infra.core.repo.hibernate.vo.BaristaPersistable;
 import me.kisoft.qahwagi.infra.repo.hiberante.HibernateCrudRepository;
+import org.apache.commons.lang3.math.NumberUtils;
 
 /**
  *
  * @author tareq
  */
 public class BaristaRepositoryHibernateImpl extends HibernateCrudRepository<Barista, BaristaPersistable> implements BaristaRepository {
+
+  @Override
+  public Barista findById(String id) {
+    BaristaPersistable foundBarista = getPersistableByUserId(id);
+    if (foundBarista != null) {
+      return foundBarista.toDomainEntity();
+    }
+    return null;
+
+  }
+
+  private BaristaPersistable getPersistableByUserId(String userId) {
+    try {
+      return getEm().createNamedQuery("BaristaPersistable.byUserId", BaristaPersistable.class)
+       .setParameter("user_id", NumberUtils.toLong(userId))
+       .getSingleResult();
+    } catch (NoResultException ex) {
+      return null;
+    }
+  }
+
+  @Override
+  public void update(Barista toUpdate, String id) {
+    toUpdate.setId(id);
+    BaristaPersistable foundBarista = getPersistableByUserId(id);
+    if (foundBarista != null) {
+      BaristaPersistable updatedBarista = new BaristaPersistable(toUpdate);
+      updatedBarista.setId(foundBarista.getId());
+      getEm().getTransaction().begin();
+      try {
+        getEm().merge(updatedBarista);
+      } finally {
+        getEm().getTransaction().commit();
+      }
+      updatedBarista.toDomainEntity().postUpdated();
+    }
+
+  }
+
+  @Override
+  public void delete(String id) {
+    BaristaPersistable foundBarista = getPersistableByUserId(id);
+    if (foundBarista != null) {
+      getEm().getTransaction().begin();
+      try {
+        getEm().remove(foundBarista);
+      } finally {
+        getEm().getTransaction().commit();
+      }
+      foundBarista.toDomainEntity().postDeleted();
+    }
+  }
 
   @Override
   public Class<Barista> getType() {

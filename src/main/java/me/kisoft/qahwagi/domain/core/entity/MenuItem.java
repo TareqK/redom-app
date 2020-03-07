@@ -24,17 +24,18 @@ public class MenuItem implements QahwagiEntity {
   private boolean available;
 
   @Override
-  public void postCreated() {
-    EventBus.getInstance().post(new DomainEvent("menuItemCreated", this));
+  public void postDeleted() {
+    EventBus.getInstance().post(new DomainEvent("menuItemDeleted", this));
+  }
+
+  @Override
+  public void postSaved() {
+    EventBus.getInstance().post(new DomainEvent("menuItemSaved", this));
   }
 
   @Override
   public void postUpdated() {
-    EventBus.getInstance().post(new DomainEvent("menuItemUpdate", this));
+    EventBus.getInstance().post(new DomainEvent("menuItemUpdated", this));
   }
 
-  @Override
-  public void postDeleted() {
-    EventBus.getInstance().post(new DomainEvent("menuItemDelete", this));
-  }
 }

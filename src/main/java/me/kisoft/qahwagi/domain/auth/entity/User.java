@@ -25,17 +25,17 @@ public class User implements QahwagiEntity {
   private String telephoneNumber;
 
   @Override
-  public void postCreated() {
-    EventBus.getInstance().post(new DomainEvent("userCreated", this));
+  public void postDeleted() {
+    EventBus.getInstance().post(new DomainEvent("userDeleted", this));
+  }
+
+  @Override
+  public void postSaved() {
+    EventBus.getInstance().post(new DomainEvent("userSaved", this));
   }
 
   @Override
   public void postUpdated() {
     EventBus.getInstance().post(new DomainEvent("userUpdated", this));
-  }
-
-  @Override
-  public void postDeleted() {
-    EventBus.getInstance().post(new DomainEvent("userDeleted", this));
   }
 }

@@ -9,6 +9,7 @@ import lombok.Data;
 import me.kisoft.qahwagi.domain.entity.QahwagiEntity;
 import me.kisoft.qahwagi.domain.event.DomainEvent;
 import me.kisoft.qahwagi.domain.event.EventBus;
+import me.kisoft.qahwagi.domain.event.handler.CustomerUserSavedEventHandler;
 
 /**
  *
@@ -17,11 +18,19 @@ import me.kisoft.qahwagi.domain.event.EventBus;
 @Data
 public class Customer implements QahwagiEntity {
 
+  static {
+    EventBus.getInstance().subscribe(new CustomerUserSavedEventHandler());
+  }
   private String id;
 
   @Override
-  public void postCreated() {
-    EventBus.getInstance().post(new DomainEvent("customerCreated", this));
+  public void postDeleted() {
+    EventBus.getInstance().post(new DomainEvent("customerDeleted", this));
+  }
+
+  @Override
+  public void postSaved() {
+    EventBus.getInstance().post(new DomainEvent("customerSaved", this));
   }
 
   @Override
@@ -29,8 +38,4 @@ public class Customer implements QahwagiEntity {
     EventBus.getInstance().post(new DomainEvent("customerUpdated", this));
   }
 
-  @Override
-  public void postDeleted() {
-    EventBus.getInstance().post(new DomainEvent("customerDeleted", this));
-  }
 }

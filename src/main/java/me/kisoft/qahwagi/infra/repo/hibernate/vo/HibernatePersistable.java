@@ -9,9 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.PostPersist;
-import javax.persistence.PostRemove;
-import javax.persistence.PostUpdate;
 import lombok.Getter;
 import lombok.Setter;
 import me.kisoft.qahwagi.domain.entity.QahwagiEntity;
@@ -27,16 +24,20 @@ import org.hibernate.envers.Audited;
 @MappedSuperclass
 public abstract class HibernatePersistable<T extends QahwagiEntity> implements Transformable<T> {
 
-  private transient T domainEntity;
-
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Getter
   @Setter
-  private Long id;
+  private Long id = null;
+
+  public void setId(Long id) {
+    this.id = id;
+    if (id == null || id == 0L) {
+      this.id = null;
+    }
+  }
 
   public HibernatePersistable(T domainEntity) {
-    this.domainEntity = domainEntity;
     this.fromDomainEntity(domainEntity);
   }
 
@@ -44,25 +45,12 @@ public abstract class HibernatePersistable<T extends QahwagiEntity> implements T
 
   }
 
-  @PostPersist
-  public void postPersist() {
-    if (domainEntity != null) {
-      domainEntity.postCreated();
-    }
+  @Override
+  public final HibernatePersistable fromDomainEntity(T domainEntity) {
+    this.toPersistable(domainEntity);
+    return this;
   }
 
-  @PostUpdate
-  public void postUpdate() {
-    if (domainEntity != null) {
-      domainEntity.postUpdated();
-    }
-  }
-
-  @PostRemove
-  public void postDelete() {
-    if (domainEntity != null) {
-      domainEntity.postDeleted();
-    }
-  }
+  protected abstract HibernatePersistable toPersistable(T domainEntity);
 
 }

@@ -5,6 +5,7 @@
  */
 package me.kisoft.qahwagi.infra.auth.repo.hibernate;
 
+import javax.persistence.NoResultException;
 import me.kisoft.qahwagi.domain.auth.entity.User;
 import me.kisoft.qahwagi.domain.auth.repo.UserRepository;
 import me.kisoft.qahwagi.infra.auth.repo.hibernate.vo.UserPersistable;
@@ -18,7 +19,13 @@ public class UserRepositoryHibernateImpl extends HibernateCrudRepository<User, U
 
   @Override
   public User getUserByUsername(String username) {
-    return findById(username);
+    try {
+      return getEm().createNamedQuery("UserPersistable.byUsername", UserPersistable.class)
+       .setParameter("username", username)
+       .getSingleResult().toDomainEntity();
+    } catch (NoResultException ex) {
+      return null;
+    }
   }
 
   @Override

@@ -5,12 +5,14 @@
  */
 package me.kisoft.qahwagi.infra.auth.repo.hibernate.vo;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import lombok.Data;
 import me.kisoft.qahwagi.domain.auth.entity.User;
 import me.kisoft.qahwagi.domain.auth.entity.UserRole;
 import me.kisoft.qahwagi.infra.repo.hibernate.vo.HibernatePersistable;
-import me.kisoft.qahwagi.infra.vo.Transformable;
 import org.apache.commons.lang3.math.NumberUtils;
 
 /**
@@ -19,13 +21,24 @@ import org.apache.commons.lang3.math.NumberUtils;
  */
 @Data
 @Entity
+@NamedQueries({
+  @NamedQuery(name = "UserPersistable.byUsername", query = "SELECT up from UserPersistable up WHERE up.username=(:username)")
+})
 public class UserPersistable extends HibernatePersistable<User> {
 
+  @Column(unique = true)
   private String username;
   private String password;
   private UserRole userRole;
   private String name;
   private String telephoneNumber;
+
+  public UserPersistable(User domainEntity) {
+    super(domainEntity);
+  }
+
+  public UserPersistable() {
+  }
 
   @Override
   public User toDomainEntity() {
@@ -40,7 +53,7 @@ public class UserPersistable extends HibernatePersistable<User> {
   }
 
   @Override
-  public Transformable fromDomainEntity(User domainEntity) {
+  public UserPersistable toPersistable(User domainEntity) {
     setId(NumberUtils.toLong(domainEntity.getId()));
     this.username = domainEntity.getUsername();
     this.password = domainEntity.getPassword();

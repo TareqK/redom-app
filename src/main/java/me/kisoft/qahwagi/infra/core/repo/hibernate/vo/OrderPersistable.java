@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import lombok.Data;
 import me.kisoft.qahwagi.domain.core.entity.Order;
 import me.kisoft.qahwagi.infra.repo.hibernate.vo.HibernatePersistable;
@@ -22,9 +24,21 @@ import org.apache.commons.lang3.math.NumberUtils;
 @Entity
 public class OrderPersistable extends HibernatePersistable<Order> {
 
+  @ManyToOne
   private CustomerPersistable customer = new CustomerPersistable();
+
+  @ManyToOne
   private CoffeeShopPersistable coffeeShop = new CoffeeShopPersistable();
+
+  @OneToMany
   private List<MenuItemPersistable> orderedItems = new ArrayList<>();
+
+  public OrderPersistable(Order domainEntity) {
+    super(domainEntity);
+  }
+
+  public OrderPersistable() {
+  }
 
   @Override
   public Order toDomainEntity() {
@@ -38,12 +52,12 @@ public class OrderPersistable extends HibernatePersistable<Order> {
   }
 
   @Override
-  public OrderPersistable fromDomainEntity(Order domainEntity) {
+  public OrderPersistable toPersistable(Order domainEntity) {
     this.setId(NumberUtils.toLong(domainEntity.getId()));
-    this.customer = new CustomerPersistable().fromDomainEntity(domainEntity.getCustomer());
-    this.coffeeShop = new CoffeeShopPersistable().fromDomainEntity(domainEntity.getCoffeeShop());
+    this.customer = new CustomerPersistable(domainEntity.getCustomer());
+    this.coffeeShop = new CoffeeShopPersistable(domainEntity.getCoffeeShop());
     domainEntity.getOrderedItems().parallelStream().forEach(cnsmr -> {
-      orderedItems.add(new MenuItemPersistable().fromDomainEntity(cnsmr));
+      orderedItems.add(new MenuItemPersistable(cnsmr));
     });
     return this;
   }

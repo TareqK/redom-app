@@ -18,11 +18,16 @@ import me.kisoft.qahwagi.domain.event.EventBus;
 public class Barista implements QahwagiEntity {
 
   private String id;
-  private CoffeeShop coffeeShop;
+  private CoffeeShop coffeeShop = new CoffeeShop();
 
   @Override
-  public void postCreated() {
-    EventBus.getInstance().post(new DomainEvent("baristaCreated", this));
+  public void postDeleted() {
+    EventBus.getInstance().post(new DomainEvent("baristaDeleted", this));
+  }
+
+  @Override
+  public void postSaved() {
+    EventBus.getInstance().post(new DomainEvent("batistaSaved", this));
   }
 
   @Override
@@ -30,8 +35,4 @@ public class Barista implements QahwagiEntity {
     EventBus.getInstance().post(new DomainEvent("batistaUpdated", this));
   }
 
-  @Override
-  public void postDeleted() {
-    EventBus.getInstance().post(new DomainEvent("baristaDeleted", this));
-  }
 }

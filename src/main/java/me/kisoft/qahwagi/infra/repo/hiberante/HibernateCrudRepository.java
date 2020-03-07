@@ -12,20 +12,24 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import me.kisoft.qahwagi.domain.entity.QahwagiEntity;
+import me.kisoft.qahwagi.domain.repo.CrudRepository;
 import me.kisoft.qahwagi.infra.factory.EntityManagerFactory;
 import me.kisoft.qahwagi.infra.repo.hibernate.vo.HibernatePersistable;
-import me.kisoft.qahwagi.domain.repo.CrudRepository;
+import me.kisoft.qahwagi.infra.vo.Transformable;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 /**
  *
  * @author tareq
  */
-public abstract class HibernateCrudRepository<T extends QahwagiEntity, P extends HibernatePersistable<T>> implements CrudRepository<T> {
+public abstract class HibernateCrudRepository<T extends QahwagiEntity, P extends HibernatePersistable<T>> implements CrudRepository<T>, AutoCloseable {
 
   private EntityManager em = EntityManagerFactory.getInstance().get();
 
@@ -60,7 +64,11 @@ public abstract class HibernateCrudRepository<T extends QahwagiEntity, P extends
   }
 
   private P findPersistableById(String id) {
-    return getEm().find(getPersistable(), id);
+    try {
+      return getEm().find(getPersistable(), NumberUtils.toLong(id));
+    } catch (NoResultException ex) {
+      return null;
+    }
   }
 
   @Override
@@ -68,14 +76,31 @@ public abstract class HibernateCrudRepository<T extends QahwagiEntity, P extends
     P persistable = convertToPersistable(toSave);
     getEm().getTransaction().begin();
     try {
-      if (persistable.getId() == null) {
+      if (StringUtils.isBlank(toSave.getId())) {
         em.persist(persistable);
       } else {
-        em.merge(persistable);
+        persistable = em.merge(persistable);
       }
     } finally {
       getEm().getTransaction().commit();
     }
+    toSave = (T) ((Transformable) persistable).toDomainEntity();
+    toSave.postSaved();
+
+  }
+
+  @Override
+  public void update(T toUpdate, String id) {
+    toUpdate.setId(id);
+    P persistable = convertToPersistable(toUpdate);
+    getEm().getTransaction().begin();
+    try {
+      persistable = em.merge(persistable);
+    } finally {
+      getEm().getTransaction().commit();
+    }
+    toUpdate = (T) ((Transformable) persistable).toDomainEntity();
+    toUpdate.postSaved();
   }
 
   @Override
@@ -90,7 +115,9 @@ public abstract class HibernateCrudRepository<T extends QahwagiEntity, P extends
       } finally {
         getEm().getTransaction().commit();
       }
+      ((Transformable) persistable).toDomainEntity().postDeleted();
     }
+
   }
 
   private P convertToPersistable(T toConvert) {
@@ -118,6 +145,11 @@ public abstract class HibernateCrudRepository<T extends QahwagiEntity, P extends
       Logger.getLogger(HibernateCrudRepository.class.getName()).log(Level.SEVERE, null, ex);
     }
     return null;
+  }
+
+  @Override
+  public void close() {
+    getEm().close();
   }
 
   public abstract Class<T> getType();

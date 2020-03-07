@@ -32,6 +32,6 @@ public class EventBus {
   }
 
   public void subscribe(DomainEventHandler handler) {
-    jbus.registerWeak(handler);
+    jbus.register(handler);
   }
 }

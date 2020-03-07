@@ -11,10 +11,14 @@ package me.kisoft.qahwagi.domain.entity;
  */
 public interface QahwagiEntity {
 
-  void postCreated();
+  String getId();
 
-  void postUpdated();
+  void setId(String id);
 
   void postDeleted();
+
+  void postSaved();
+
+  void postUpdated();
 
 }

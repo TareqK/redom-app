@@ -24,8 +24,13 @@ public class Order implements QahwagiEntity {
   private List<MenuItem> orderedItems;
 
   @Override
-  public void postCreated() {
-    EventBus.getInstance().post(new DomainEvent("orderCreated", this));
+  public void postDeleted() {
+    EventBus.getInstance().post(new DomainEvent("orderDeleted", this));
+  }
+
+  @Override
+  public void postSaved() {
+    EventBus.getInstance().post(new DomainEvent("orderSaved", this));
   }
 
   @Override
@@ -33,8 +38,4 @@ public class Order implements QahwagiEntity {
     EventBus.getInstance().post(new DomainEvent("orderUpdated", this));
   }
 
-  @Override
-  public void postDeleted() {
-    EventBus.getInstance().post(new DomainEvent("orderDeleted", this));
-  }
 }

@@ -5,6 +5,7 @@
  */
 package me.kisoft.qahwagi.domain.core.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
 import me.kisoft.qahwagi.domain.entity.QahwagiEntity;
@@ -25,11 +26,16 @@ public class CoffeeShop implements QahwagiEntity {
   private String telephoneNumber;
   private double servingRadius;
   private boolean takingOrders;
-  private List<MenuItem> offerings;
+  private List<MenuItem> offerings = new ArrayList<>();
 
   @Override
-  public void postCreated() {
-    EventBus.getInstance().post(new DomainEvent("coffeeShopCreated", this));
+  public void postDeleted() {
+    EventBus.getInstance().post(new DomainEvent("coffeeShopDeleted", this));
+  }
+
+  @Override
+  public void postSaved() {
+    EventBus.getInstance().post(new DomainEvent("coffeeShopSaved", this));
   }
 
   @Override
@@ -37,8 +43,4 @@ public class CoffeeShop implements QahwagiEntity {
     EventBus.getInstance().post(new DomainEvent("coffeeShopUpdated", this));
   }
 
-  @Override
-  public void postDeleted() {
-    EventBus.getInstance().post(new DomainEvent("coffeeShopDeleted", this));
-  }
 }

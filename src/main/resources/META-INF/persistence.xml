@@ -7,7 +7,8 @@
       <property name="javax.persistence.jdbc.user" value="qahwagi"/>
       <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
       <property name="javax.persistence.jdbc.password" value="qahwagi"/>
-      <property name="hibernate.dialect" value="org.hibernate.spatial.dialect.mysql.MySQLSpatialDialect"/>
+      <property name="hibernate.dialect" value="org.hibernate.spatial.dialect.mysql.MySQL8SpatialDialect"/>
+      <property name="hibernate.dialect.storage_engine" value="innodb"/>
       <property name="hibernate.hbm2ddl.auto" value="update"/>
     </properties>
   </persistence-unit>

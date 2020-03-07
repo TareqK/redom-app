@@ -24,6 +24,13 @@ public class MenuItemPersistable extends HibernatePersistable<MenuItem> {
   private double price;
   private boolean available;
 
+  public MenuItemPersistable(MenuItem domainEntity) {
+    super(domainEntity);
+  }
+
+  public MenuItemPersistable() {
+  }
+
   @Override
   public MenuItem toDomainEntity() {
     MenuItem m = new MenuItem();
@@ -36,7 +43,7 @@ public class MenuItemPersistable extends HibernatePersistable<MenuItem> {
   }
 
   @Override
-  public MenuItemPersistable fromDomainEntity(MenuItem domainEntity) {
+  protected MenuItemPersistable toPersistable(MenuItem domainEntity) {
     this.setId(NumberUtils.toLong(domainEntity.getId()));
     this.name = domainEntity.getName();
     this.description = domainEntity.getDescription();
