@@ -39,7 +39,7 @@ public class BaristaRepositoryHibernateImpl extends HibernateCrudRepository<Bari
   }
 
   @Override
-  public void update(Barista toUpdate, String id) {
+  public Barista update(Barista toUpdate, String id) {
     toUpdate.setId(id);
     BaristaPersistable foundBarista = getPersistableByUserId(id);
     if (foundBarista != null) {
@@ -51,9 +51,10 @@ public class BaristaRepositoryHibernateImpl extends HibernateCrudRepository<Bari
       } finally {
         getEm().getTransaction().commit();
       }
-      updatedBarista.toDomainEntity().postUpdated();
+      toUpdate = updatedBarista.toDomainEntity();
+      toUpdate.postUpdated();
     }
-
+    return toUpdate;
   }
 
   @Override

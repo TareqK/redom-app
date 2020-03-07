@@ -8,11 +8,17 @@ package me.kisoft.qahwagi.infra.core.repo.hibernate.vo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import lombok.Data;
+import me.kisoft.qahwagi.domain.core.entity.Customer;
 import me.kisoft.qahwagi.domain.core.entity.Order;
+import me.kisoft.qahwagi.domain.core.entity.OrderStatus;
+import me.kisoft.qahwagi.infra.auth.repo.hibernate.vo.UserPersistable;
 import me.kisoft.qahwagi.infra.repo.hibernate.vo.HibernatePersistable;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -24,14 +30,17 @@ import org.apache.commons.lang3.math.NumberUtils;
 @Entity
 public class OrderPersistable extends HibernatePersistable<Order> {
 
-  @ManyToOne
-  private CustomerPersistable customer = new CustomerPersistable();
+  @OneToOne
+  private UserPersistable user;
 
-  @ManyToOne
-  private CoffeeShopPersistable coffeeShop = new CoffeeShopPersistable();
+  @OneToOne
+  private CoffeeShopPersistable coffeeShop;
 
-  @OneToMany
-  private List<MenuItemPersistable> orderedItems = new ArrayList<>();
+  @Enumerated(EnumType.STRING)
+  private OrderStatus orderStatus;
+
+  @ManyToMany(cascade = CascadeType.ALL)
+  private List<OrderedItemPersistable> orderedItems;
 
   public OrderPersistable(Order domainEntity) {
     super(domainEntity);
@@ -44,9 +53,12 @@ public class OrderPersistable extends HibernatePersistable<Order> {
   public Order toDomainEntity() {
     Order o = new Order();
     o.setId(String.valueOf(getId()));
-    o.setCustomer(customer.toDomainEntity());
+    Customer c = new Customer();
+    c.setId(user.toDomainEntity().getId());
+    o.setCustomer(c);
     o.setCoffeeShop(coffeeShop.toDomainEntity());
-    o.setOrderedItems(orderedItems.parallelStream().map(MenuItemPersistable::toDomainEntity).collect(Collectors.toList()));
+    o.setOrderStatus(orderStatus);
+    o.setOrderedItems(orderedItems.parallelStream().map(OrderedItemPersistable::toDomainEntity).collect(Collectors.toList()));
     return o;
 
   }
@@ -54,10 +66,13 @@ public class OrderPersistable extends HibernatePersistable<Order> {
   @Override
   public OrderPersistable toPersistable(Order domainEntity) {
     this.setId(NumberUtils.toLong(domainEntity.getId()));
-    this.customer = new CustomerPersistable(domainEntity.getCustomer());
+    this.user = new UserPersistable();
+    this.user.setId(NumberUtils.toLong(domainEntity.getCustomer().getId()));
     this.coffeeShop = new CoffeeShopPersistable(domainEntity.getCoffeeShop());
+    this.orderStatus = domainEntity.getOrderStatus();
+    orderedItems = new ArrayList<>();
     domainEntity.getOrderedItems().parallelStream().forEach(cnsmr -> {
-      orderedItems.add(new MenuItemPersistable(cnsmr));
+      orderedItems.add(new OrderedItemPersistable(cnsmr));
     });
     return this;
   }

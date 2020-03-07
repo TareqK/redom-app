@@ -72,7 +72,7 @@ public abstract class HibernateCrudRepository<T extends QahwagiEntity, P extends
   }
 
   @Override
-  public void save(T toSave) {
+  public T save(T toSave) {
     P persistable = convertToPersistable(toSave);
     getEm().getTransaction().begin();
     try {
@@ -86,11 +86,11 @@ public abstract class HibernateCrudRepository<T extends QahwagiEntity, P extends
     }
     toSave = (T) ((Transformable) persistable).toDomainEntity();
     toSave.postSaved();
-
+    return toSave;
   }
 
   @Override
-  public void update(T toUpdate, String id) {
+  public T update(T toUpdate, String id) {
     toUpdate.setId(id);
     P persistable = convertToPersistable(toUpdate);
     getEm().getTransaction().begin();
@@ -101,6 +101,7 @@ public abstract class HibernateCrudRepository<T extends QahwagiEntity, P extends
     }
     toUpdate = (T) ((Transformable) persistable).toDomainEntity();
     toUpdate.postSaved();
+    return toUpdate;
   }
 
   @Override

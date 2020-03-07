@@ -48,30 +48,38 @@ public class Main {
       handler.handle(ctx);
     });
 
+    UserRestService userService = new UserRestService();
+    OrderRestService orderService = new OrderRestService();
+    CoffeeShopRestService coffeeShopService = new CoffeeShopRestService();
     app.routes(() -> {
       path("user", () -> {
         path("signin", () -> {
-          post(ctx -> new UserRestService().signIn(ctx), roles(NONE));
+          post(userService::signIn, roles(NONE));
         });
         path("signup", () -> {
-          post(ctx -> new UserRestService().signUp(ctx), roles(NONE));
+          post(userService::signUp, roles(NONE));
         });
       });
       path("order", () -> {
-        get(ctx -> new OrderRestService().getAll(ctx), roles(ROLE_CUSTOMER, ROLE_BARISTA));
-        post(ctx -> new OrderRestService().create(ctx), roles(ROLE_CUSTOMER));
+        get(orderService::getAll, roles(ROLE_CUSTOMER, ROLE_BARISTA));
+        post(orderService::create, roles(ROLE_CUSTOMER));
         path(":id", () -> {
-          put(ctx -> new OrderRestService().update(ctx), roles(ROLE_BARISTA));
+          put(orderService::update, roles(ROLE_BARISTA));
         });
       });
       path("shop", () -> {
-        get(ctx -> new CoffeeShopRestService().getAll(ctx), roles(ROLE_CUSTOMER));
+        get(coffeeShopService::getAll, roles(ROLE_CUSTOMER));
         path("find", () -> {
-          get(ctx -> new CoffeeShopRestService().findNearest(ctx), roles(ROLE_CUSTOMER));
+          get(coffeeShopService::findNearest, roles(ROLE_CUSTOMER));
         });
         path("myshop", () -> {
-          get(ctx -> new CoffeeShopRestService().getMyShop(ctx), roles(ROLE_BARISTA));
-          put(ctx -> new CoffeeShopRestService().updateMyShop(ctx), roles(ROLE_BARISTA));
+          get(coffeeShopService::getMyShop, roles(ROLE_BARISTA));
+          put(coffeeShopService::updateMyShop, roles(ROLE_BARISTA));
+        });
+        path(":id", () -> {
+          path("order", () -> {
+            post(orderService::orderFromShop, roles(ROLE_CUSTOMER));
+          });
         });
       });
     });

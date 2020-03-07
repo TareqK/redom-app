@@ -11,6 +11,7 @@ import lombok.Data;
 import me.kisoft.qahwagi.domain.entity.QahwagiEntity;
 import me.kisoft.qahwagi.domain.event.DomainEvent;
 import me.kisoft.qahwagi.domain.event.EventBus;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -41,6 +42,29 @@ public class CoffeeShop implements QahwagiEntity {
   @Override
   public void postUpdated() {
     EventBus.getInstance().post(new DomainEvent("coffeeShopUpdated", this));
+  }
+
+  public Order createOrder(Customer customer, List<String> menuItemIds, double latitude, double longitude) {
+    if (isTakingOrders() && isWithinServingRadius(latitude, longitude)) {
+      Order o = new Order();
+      o.setCoffeeShop(this);
+      o.setCustomer(customer);
+      o.setLatitude(latitude);
+      o.setLongitude(longitude);
+      for (String itemId : menuItemIds) {
+        if (offerings.stream().anyMatch(menuItem -> StringUtils.equals(menuItem.getId(), itemId))) {
+          OrderedItem toAdd = new OrderedItem(itemId);
+          o.getOrderedItems().add(toAdd);
+        }
+      }
+      return o;
+    } else {
+      return null;
+    }
+  }
+
+  public boolean isWithinServingRadius(double latitude, double longitude) {
+    return true;
   }
 
 }

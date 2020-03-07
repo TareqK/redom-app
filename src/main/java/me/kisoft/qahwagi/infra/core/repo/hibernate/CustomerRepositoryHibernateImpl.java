@@ -39,7 +39,7 @@ public class CustomerRepositoryHibernateImpl extends HibernateCrudRepository<Cus
   }
 
   @Override
-  public void update(Customer toUpdate, String id) {
+  public Customer update(Customer toUpdate, String id) {
     toUpdate.setId(id);
     CustomerPersistable foundCustomer = getPersistableByUserId(id);
     if (foundCustomer != null) {
@@ -51,9 +51,10 @@ public class CustomerRepositoryHibernateImpl extends HibernateCrudRepository<Cus
       } finally {
         getEm().getTransaction().commit();
       }
-      updatedCustomer.toDomainEntity().postUpdated();
+      toUpdate = updatedCustomer.toDomainEntity();
+      toUpdate.postUpdated();
     }
-
+    return toUpdate;
   }
 
   @Override

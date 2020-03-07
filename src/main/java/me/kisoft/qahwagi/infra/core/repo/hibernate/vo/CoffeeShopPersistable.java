@@ -36,7 +36,7 @@ public class CoffeeShopPersistable extends HibernatePersistable<CoffeeShop> {
   private BaristaPersistable barista;
 
   @OneToMany(cascade = CascadeType.ALL)
-  private List<MenuItemPersistable> offerings = new ArrayList();
+  private List<MenuItemPersistable> offerings;
 
   public CoffeeShopPersistable(CoffeeShop domainEntity) {
     super(domainEntity);
@@ -69,6 +69,7 @@ public class CoffeeShopPersistable extends HibernatePersistable<CoffeeShop> {
     this.telephoneNumber = domainEntity.getTelephoneNumber();
     this.servingRadius = domainEntity.getServingRadius();
     this.takingOrders = domainEntity.isTakingOrders();
+    this.offerings = new ArrayList<>();
     domainEntity.getOfferings().parallelStream().forEach(cnsmr -> {
       this.offerings.add(new MenuItemPersistable(cnsmr));
     });

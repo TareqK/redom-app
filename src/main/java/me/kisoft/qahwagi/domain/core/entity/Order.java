@@ -5,6 +5,7 @@
  */
 package me.kisoft.qahwagi.domain.core.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
 import me.kisoft.qahwagi.domain.entity.QahwagiEntity;
@@ -19,9 +20,13 @@ import me.kisoft.qahwagi.domain.event.EventBus;
 public class Order implements QahwagiEntity {
 
   private String id;
-  private Customer customer;
-  private CoffeeShop coffeeShop;
-  private List<MenuItem> orderedItems;
+  private Customer customer = new Customer();
+  private CoffeeShop coffeeShop = new CoffeeShop();
+  private double latitude;
+  private double longitude;
+  private double notes;
+  private OrderStatus orderStatus = OrderStatus.STARTED;
+  private List<OrderedItem> orderedItems = new ArrayList<>();
 
   @Override
   public void postDeleted() {

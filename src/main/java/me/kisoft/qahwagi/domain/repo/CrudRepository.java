@@ -18,9 +18,14 @@ public interface CrudRepository<T extends QahwagiEntity> extends AutoCloseable {
 
   T findById(String id);
 
-  void save(T toSave);
+  default T refresh(T toRefresh) {
+    toRefresh = findById(toRefresh.getId());
+    return toRefresh;
+  }
 
-  void update(T toUpdate, String id);
+  T save(T toSave);
+
+  T update(T toUpdate, String id);
 
   public default void update(T toUpdate) {
     this.update(toUpdate, toUpdate.getId());
