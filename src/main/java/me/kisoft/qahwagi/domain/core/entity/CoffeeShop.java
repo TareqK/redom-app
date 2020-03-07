@@ -51,12 +51,11 @@ public class CoffeeShop implements QahwagiEntity {
       o.setCustomer(customer);
       o.setLatitude(latitude);
       o.setLongitude(longitude);
-      for (String itemId : menuItemIds) {
-        if (offerings.stream().anyMatch(menuItem -> StringUtils.equals(menuItem.getId(), itemId))) {
-          OrderedItem toAdd = new OrderedItem(itemId);
-          o.getOrderedItems().add(toAdd);
-        }
-      }
+      menuItemIds.stream().filter((itemId)
+       -> (offerings.stream().anyMatch(menuItem -> StringUtils.equals(menuItem.getId(), itemId))))
+       .map((itemId) -> new OrderedItem(itemId)).forEachOrdered((toAdd) -> {
+        o.getOrderedItems().add(toAdd);
+      });
       return o;
     } else {
       return null;

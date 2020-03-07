@@ -6,95 +6,52 @@
 package me.kisoft.qahwagi.infra.core.service.rest;
 
 import io.javalin.http.Context;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import me.kisoft.qahwagi.domain.auth.entity.User;
-import me.kisoft.qahwagi.domain.core.entity.Barista;
 import me.kisoft.qahwagi.domain.core.entity.CoffeeShop;
-import me.kisoft.qahwagi.domain.core.repo.BaristaRepository;
-import me.kisoft.qahwagi.domain.core.repo.CoffeeShopRepository;
-import me.kisoft.qahwagi.infra.core.factory.BaristaRepositoryFactory;
-import me.kisoft.qahwagi.infra.core.factory.CoffeeShopRepositoryFactory;
-import me.kisoft.qahwagi.infra.rest.service.RestService;
+import me.kisoft.qahwagi.domain.core.entity.Order;
+import me.kisoft.qahwagi.domain.core.service.CoffeeShopService;
+import me.kisoft.qahwagi.infra.core.factory.CoffeeShopServiceFactory;
+import me.kisoft.qahwagi.infra.core.service.rest.vo.OrderRequest;
 
 /**
  *
  * @author tareq
  */
-public class CoffeeShopRestService extends RestService<CoffeeShop> {
+public class CoffeeShopRestService {
 
-  @Override
-  public List<CoffeeShop> findAll() throws Exception {
-    try (CoffeeShopRepository repo = CoffeeShopRepositoryFactory.getInstance().get()) {
-      return repo.findAll();
-    }
+  CoffeeShopService service = CoffeeShopServiceFactory.getInstance().get();
+
+  public void getShopOrders(Context ctx) {
+    User u = ctx.sessionAttribute("user");
+    ctx.json(service.getCoffeeShopOrdersForBarista(u.getId()));
   }
 
-  @Override
-  public CoffeeShop findOne(String id) throws Exception {
-    try (CoffeeShopRepository repo = CoffeeShopRepositoryFactory.getInstance().get()) {
-      return repo.findById(id);
-    }
-  }
-
-  @Override
-  public void save(CoffeeShop toSave) throws Exception {
-    try (CoffeeShopRepository repo = CoffeeShopRepositoryFactory.getInstance().get()) {
-      repo.save(toSave);
-    }
-  }
-
-  @Override
-  public void update(CoffeeShop toUpdate, String id) throws Exception {
-    try (CoffeeShopRepository repo = CoffeeShopRepositoryFactory.getInstance().get()) {
-      repo.update(toUpdate, id);
-    }
-  }
-
-  @Override
-  public void delete(String id) throws Exception {
-    try (CoffeeShopRepository repo = CoffeeShopRepositoryFactory.getInstance().get()) {
-      repo.delete(id);
-    }
+  public void getAll(Context ctx) {
+    ctx.json(service.getServingCoffeeShops());
   }
 
   public void findNearest(Context ctx) {
-    try (CoffeeShopRepository repo = CoffeeShopRepositoryFactory.getInstance().get()) {
-      ctx.json(repo.getServingShopsNear(ctx.queryParam("latitude", Long.class).get(), ctx.queryParam("longitude", Long.class).get()));
-    } catch (Exception ex) {
-      ctx.res.setStatus(500);
-      Logger.getLogger(RestService.class.getName()).log(Level.SEVERE, null, ex);
-    }
-  }
-
-  @Override
-  public Class<CoffeeShop> getType() {
-    return CoffeeShop.class;
+    ctx.json(service.getServingShopsNear(ctx.queryParam("latitude", Long.class).get(), ctx.queryParam("longitude", Long.class).get()));
   }
 
   public void getMyShop(Context ctx) {
-    try (BaristaRepository repo = BaristaRepositoryFactory.getInstance().get()) {
-      User u = ctx.sessionAttribute("user");
-      Barista b = repo.findById(u.getId());
-      ctx.json(b.getCoffeeShop());
-    } catch (Exception ex) {
-      ctx.res.setStatus(500);
-      Logger.getLogger(RestService.class.getName()).log(Level.SEVERE, null, ex);
-    }
+    User u = ctx.sessionAttribute("user");
+    ctx.json(service.getBaristaCoffeeShop(u.getId()));
   }
 
   public void updateMyShop(Context ctx) {
-    try (BaristaRepository repo = BaristaRepositoryFactory.getInstance().get()) {
-      User u = ctx.sessionAttribute("user");
-      Barista b = repo.findById(u.getId());
-      CoffeeShop shop = ctx.bodyAsClass(CoffeeShop.class);
-      shop.setId(b.getCoffeeShop().getId());
-      b.setCoffeeShop(shop);
-      repo.update(b);
-    } catch (Exception ex) {
-      ctx.res.setStatus(500);
-      Logger.getLogger(RestService.class.getName()).log(Level.SEVERE, null, ex);
+    User u = ctx.sessionAttribute("user");
+    service.updateCoffeeShopOfBarista(ctx.bodyAsClass(CoffeeShop.class), u.getId());
+  }
+
+  public void createOrder(Context ctx) {
+    User u = ctx.sessionAttribute("user");
+    OrderRequest request = ctx.bodyAsClass(OrderRequest.class);
+    Order createdOrder = service.createOrder(ctx.pathParam("id"), u.getId(), request.getOrderedItems(), request.getLatitude(), request.getLongitude());
+    if (createdOrder != null) {
+      ctx.json(createdOrder);
+    } else {
+      ctx.res.setStatus(409);
     }
   }
 

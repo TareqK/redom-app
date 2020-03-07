@@ -9,20 +9,21 @@ import io.javalin.Javalin;
 import static io.javalin.apibuilder.ApiBuilder.*;
 import static io.javalin.core.security.SecurityUtil.roles;
 import io.javalin.http.Context;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import lombok.extern.java.Log;
 import me.kisoft.qahwagi.domain.auth.entity.User;
 import me.kisoft.qahwagi.domain.auth.entity.UserRole;
 import static me.kisoft.qahwagi.domain.auth.entity.UserRole.NONE;
 import static me.kisoft.qahwagi.domain.auth.entity.UserRole.ROLE_BARISTA;
 import static me.kisoft.qahwagi.domain.auth.entity.UserRole.ROLE_CUSTOMER;
-import me.kisoft.qahwagi.domain.event.DomainEventHandler;
 import me.kisoft.qahwagi.domain.event.EventBus;
-import me.kisoft.qahwagi.domain.event.EventHandler;
 import me.kisoft.qahwagi.infra.auth.service.rest.UserRestService;
 import me.kisoft.qahwagi.infra.core.service.rest.CoffeeShopRestService;
 import me.kisoft.qahwagi.infra.core.service.rest.OrderRestService;
 import me.kisoft.qahwagi.infra.factory.EntityManagerFactory;
-import org.reflections.Reflections;
 
 /**
  *
@@ -34,6 +35,7 @@ public class Main {
   public static void main(String[] args) throws Throwable {
     EntityManagerFactory.getInstance().setPersistenceUnit("qahwagi_prod_PU");
     registerDomainHandlers();
+    registerDerbyShutdownHook();
     Javalin app = Javalin.create().start(7000);
 
     // Set the access-manager that Javalin should use
@@ -49,8 +51,8 @@ public class Main {
     });
 
     UserRestService userService = new UserRestService();
-    OrderRestService orderService = new OrderRestService();
     CoffeeShopRestService coffeeShopService = new CoffeeShopRestService();
+    OrderRestService orderService = new OrderRestService();
     app.routes(() -> {
       path("user", () -> {
         path("signin", () -> {
@@ -61,10 +63,9 @@ public class Main {
         });
       });
       path("order", () -> {
-        get(orderService::getAll, roles(ROLE_CUSTOMER, ROLE_BARISTA));
-        post(orderService::create, roles(ROLE_CUSTOMER));
-        path(":id", () -> {
-          put(orderService::update, roles(ROLE_BARISTA));
+        get(orderService::findOrders, roles(ROLE_CUSTOMER));
+        path(":id/status", () -> {
+          put(orderService::updateOrderStatus, roles(ROLE_BARISTA));
         });
       });
       path("shop", () -> {
@@ -75,10 +76,14 @@ public class Main {
         path("myshop", () -> {
           get(coffeeShopService::getMyShop, roles(ROLE_BARISTA));
           put(coffeeShopService::updateMyShop, roles(ROLE_BARISTA));
+          path("orders", () -> {
+            get(coffeeShopService::getShopOrders, roles(ROLE_BARISTA));
+          });
         });
+
         path(":id", () -> {
           path("order", () -> {
-            post(orderService::orderFromShop, roles(ROLE_CUSTOMER));
+            post(coffeeShopService::createOrder, roles(ROLE_CUSTOMER));
           });
         });
       });
@@ -94,14 +99,21 @@ public class Main {
   }
 
   private static void registerDomainHandlers() throws Throwable {
-    Reflections r = new Reflections(DomainEventHandler.class);
-    for (Class clazz : r.getTypesAnnotatedWith(EventHandler.class)) {
-      Object o = clazz.getConstructor().newInstance();
-      if (o instanceof DomainEventHandler) {
-        EventBus.getInstance().subscribe((DomainEventHandler) o);
-        log.info("Added Event Handler " + clazz.getSimpleName());
+    EventBus.getInstance().searchForHandlers();
+  }
+
+  private static void registerDerbyShutdownHook() {
+    Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          String jdbc = String.valueOf(EntityManagerFactory.getInstance().get().getEntityManagerFactory().getProperties().get("javax.persistence.jdbc.url"));
+          DriverManager.getConnection(jdbc + ";shutdown=true");
+        } catch (SQLException ex) {
+          Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
       }
-    }
+    }));
   }
 
 }

@@ -12,9 +12,9 @@
       <version>3.7.0</version>
     </dependency>
     <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-spatial</artifactId>
-      <version>5.4.12.Final</version>
+      <groupId>org.apache.derby</groupId>
+      <artifactId>derby</artifactId>
+      <version>10.10.2.0</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>

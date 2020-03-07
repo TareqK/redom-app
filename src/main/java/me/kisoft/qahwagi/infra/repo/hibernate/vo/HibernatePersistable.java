@@ -25,7 +25,7 @@ import org.hibernate.envers.Audited;
 public abstract class HibernatePersistable<T extends QahwagiEntity> implements Transformable<T> {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Getter
   @Setter
   private Long id = null;

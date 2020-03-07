@@ -5,7 +5,6 @@
  */
 package me.kisoft.qahwagi.domain.auth.service;
 
-import me.kisoft.qahwagi.domain.auth.entity.UserRole;
 import me.kisoft.qahwagi.domain.auth.entity.User;
 
 /**
@@ -14,7 +13,7 @@ import me.kisoft.qahwagi.domain.auth.entity.User;
  */
 public interface UserService {
 
-  public boolean authenticate(User user);
+  public User signIn(String username, String password);
 
-  public boolean isUserInRole(UserRole role, User user);
+  public User signUp(User user);
 }
