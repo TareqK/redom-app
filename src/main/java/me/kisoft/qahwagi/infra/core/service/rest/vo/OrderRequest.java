@@ -5,6 +5,7 @@
  */
 package me.kisoft.qahwagi.infra.core.service.rest.vo;
 
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
 import me.kisoft.qahwagi.domain.core.entity.CoffeeShop;
@@ -19,7 +20,7 @@ public class OrderRequest {
 
   private CoffeeShop coffeeShop;
   private Customer customer;
-  private List<String> orderedItems;
+  private List<String> orderedItems = new ArrayList<>();
   private double latitude;
   private double longitude;
   private String notes;

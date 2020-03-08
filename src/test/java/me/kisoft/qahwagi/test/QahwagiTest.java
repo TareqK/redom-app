@@ -55,17 +55,24 @@ public class QahwagiTest {
   }
 
   public static void createTestUsers() {
-    User baristaUser = new User();
-    baristaUser.setUserRole(UserRole.ROLE_BARISTA);
-    baristaUser.setUsername("barista");
-    baristaUser.setPassword("barista");
-    given().when().body(baristaUser).post("/user/signup").then().statusCode(200);
+    createBaristaUser("barista", "barista");
+    createCustomerUser("customer", "customer");
+  }
 
-    User customerUser = new User();
-    customerUser.setUserRole(UserRole.ROLE_CUSTOMER);
-    customerUser.setUsername("customer");
-    customerUser.setPassword("customer");
-    given().when().body(customerUser).post("/user/signup").then().statusCode(200);
+  public static void createBaristaUser(String username, String password) {
+    createUser(username, password, UserRole.ROLE_BARISTA);
+  }
+
+  public static void createCustomerUser(String username, String password) {
+    createUser(username, password, UserRole.ROLE_CUSTOMER);
+  }
+
+  public static void createUser(String username, String password, UserRole role) {
+    User toCreate = new User();
+    toCreate.setUserRole(role);
+    toCreate.setUsername(username);
+    toCreate.setPassword(password);
+    given().when().body(toCreate).post("/user/signup").then().statusCode(200);
   }
 
   public static RequestSpecification asCustomer() {
