@@ -6,7 +6,10 @@
 package me.kisoft.qahwagi.app;
 
 import io.javalin.Javalin;
-import static io.javalin.apibuilder.ApiBuilder.*;
+import static io.javalin.apibuilder.ApiBuilder.get;
+import static io.javalin.apibuilder.ApiBuilder.path;
+import static io.javalin.apibuilder.ApiBuilder.post;
+import static io.javalin.apibuilder.ApiBuilder.put;
 import static io.javalin.core.security.SecurityUtil.roles;
 import io.javalin.http.Context;
 import java.sql.DriverManager;
@@ -30,13 +33,45 @@ import me.kisoft.qahwagi.infra.factory.EntityManagerFactory;
  * @author tareq
  */
 @Log
-public class Main {
+public class Qahwagi {
+
+  private static Javalin app;
 
   public static void main(String[] args) throws Throwable {
     EntityManagerFactory.getInstance().setPersistenceUnit("qahwagi_prod_PU");
     registerDomainHandlers();
     registerDerbyShutdownHook();
-    Javalin app = Javalin.create().start(7000);
+    startServer();
+  }
+
+  public static UserRole getUserRole(Context ctx) {
+    User user = ctx.sessionAttribute("user");
+    if (user == null || user.getUserRole() == null) {
+      return UserRole.NONE;
+    }
+    return user.getUserRole();
+  }
+
+  private static void registerDomainHandlers() throws Throwable {
+    EventBus.getInstance().searchForHandlers();
+  }
+
+  private static void registerDerbyShutdownHook() {
+    Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          String jdbc = String.valueOf(EntityManagerFactory.getInstance().get().getEntityManagerFactory().getProperties().get("javax.persistence.jdbc.url"));
+          DriverManager.getConnection(jdbc + ";shutdown=true");
+        } catch (SQLException ex) {
+          Logger.getLogger(Qahwagi.class.getName()).log(Level.SEVERE, null, ex);
+        }
+      }
+    }));
+  }
+
+  public static void startServer() {
+    app = Javalin.create().start(7000);
 
     // Set the access-manager that Javalin should use
     app.config.accessManager((handler, ctx, permittedRoles) -> {
@@ -90,30 +125,7 @@ public class Main {
     });
   }
 
-  public static UserRole getUserRole(Context ctx) {
-    User user = ctx.sessionAttribute("user");
-    if (user == null || user.getUserRole() == null) {
-      return UserRole.NONE;
-    }
-    return user.getUserRole();
+  public static void stopServer() {
+    app.stop();
   }
-
-  private static void registerDomainHandlers() throws Throwable {
-    EventBus.getInstance().searchForHandlers();
-  }
-
-  private static void registerDerbyShutdownHook() {
-    Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          String jdbc = String.valueOf(EntityManagerFactory.getInstance().get().getEntityManagerFactory().getProperties().get("javax.persistence.jdbc.url"));
-          DriverManager.getConnection(jdbc + ";shutdown=true");
-        } catch (SQLException ex) {
-          Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
-      }
-    }));
-  }
-
 }

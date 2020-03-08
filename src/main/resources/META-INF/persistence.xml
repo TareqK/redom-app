@@ -12,7 +12,7 @@
   <persistence-unit name="qahwagi_test_PU" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
     <properties>
-      <property name="javax.persistence.jdbc.url" value="jdbc:derby:target/qahwagi_test;create=true"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:derby:memory:qahwagi_test;create=true"/>
       <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver"/>
       <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyDialect"/>
       <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
