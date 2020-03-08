@@ -124,6 +124,7 @@ public class Qahwagi {
       });
     });
     app.config.addStaticFiles("/webapp");
+    app.config.addSinglePageRoot("/", "/webapp/index.html");
 
   }
 
