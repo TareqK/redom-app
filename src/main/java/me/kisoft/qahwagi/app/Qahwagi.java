@@ -123,6 +123,8 @@ public class Qahwagi {
         });
       });
     });
+    app.config.addStaticFiles("/webapp");
+
   }
 
   public static void stopServer() {
