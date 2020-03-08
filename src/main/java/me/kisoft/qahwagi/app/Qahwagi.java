@@ -38,7 +38,11 @@ public class Qahwagi {
   private static Javalin app;
 
   public static void main(String[] args) throws Throwable {
-    EntityManagerFactory.getInstance().setPersistenceUnit("qahwagi_prod_PU");
+    String persistenceUnitName = "qahwagi_dev_PU";
+    if (Boolean.valueOf(System.getProperty("qahwagi.production", "false"))) {
+      persistenceUnitName = "qahwagi_prod_PU";
+    }
+    EntityManagerFactory.getInstance().setPersistenceUnit(persistenceUnitName);
     registerDomainHandlers();
     registerDerbyShutdownHook();
     startServer();

@@ -6,13 +6,13 @@
 package me.kisoft.qahwagi.infra.repo.hibernate.vo;
 
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
 import me.kisoft.qahwagi.domain.entity.QahwagiEntity;
 import me.kisoft.qahwagi.infra.vo.Transformable;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
 
 /**
@@ -25,17 +25,11 @@ import org.hibernate.envers.Audited;
 public abstract class HibernatePersistable<T extends QahwagiEntity> implements Transformable<T> {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(generator = "uuid")
+  @GenericGenerator(name = "uuid", strategy = "uuid2")
   @Getter
   @Setter
-  private Long id = null;
-
-  public void setId(Long id) {
-    this.id = id;
-    if (id == null || id == 0L) {
-      this.id = null;
-    }
-  }
+  private String id = null;
 
   public HibernatePersistable(T domainEntity) {
     this.fromDomainEntity(domainEntity);

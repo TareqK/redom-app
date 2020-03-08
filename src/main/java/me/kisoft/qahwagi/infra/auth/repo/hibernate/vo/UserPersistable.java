@@ -43,7 +43,7 @@ public class UserPersistable extends HibernatePersistable<User> {
   @Override
   public User toDomainEntity() {
     User u = new User();
-    u.setId(String.valueOf(getId()));
+    u.setId(getId());
     u.setUsername(username);
     u.setPassword(password);
     u.setUserRole(userRole);
@@ -54,7 +54,7 @@ public class UserPersistable extends HibernatePersistable<User> {
 
   @Override
   public UserPersistable toPersistable(User domainEntity) {
-    setId(NumberUtils.toLong(domainEntity.getId()));
+    setId(domainEntity.getId());
     this.username = domainEntity.getUsername();
     this.password = domainEntity.getPassword();
     this.userRole = domainEntity.getUserRole();

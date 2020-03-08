@@ -10,7 +10,6 @@ import me.kisoft.qahwagi.domain.core.entity.Customer;
 import me.kisoft.qahwagi.domain.core.repo.CustomerRepository;
 import me.kisoft.qahwagi.infra.core.repo.hibernate.vo.CustomerPersistable;
 import me.kisoft.qahwagi.infra.repo.hiberante.HibernateCrudRepository;
-import org.apache.commons.lang3.math.NumberUtils;
 
 /**
  *
@@ -31,7 +30,7 @@ public class CustomerRepositoryHibernateImpl extends HibernateCrudRepository<Cus
   private CustomerPersistable getPersistableByUserId(String userId) {
     try {
       return getEm().createNamedQuery("CustomerPersistable.byUserId", CustomerPersistable.class)
-       .setParameter("user_id", NumberUtils.toLong(userId))
+       .setParameter("user_id", userId)
        .getSingleResult();
     } catch (NoResultException ex) {
       return null;

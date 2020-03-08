@@ -1,16 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
-  <persistence-unit name="qahwagi_prod_PU" transaction-type="RESOURCE_LOCAL">
-    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+  <persistence-unit name="qahwagi_prod_PU" transaction-type="JTA">
+    <provider>org.hibernate.ogm.jpa.HibernateOgmPersistence</provider>
+    <class>me.kisoft.qahwagi.infra.auth.repo.hibernate.vo.UserPersistable</class>
+    <class>me.kisoft.qahwagi.infra.core.repo.hibernate.vo.BaristaPersistable</class>
+    <class>me.kisoft.qahwagi.infra.core.repo.hibernate.vo.CoffeeShopPersistable</class>
+    <class>me.kisoft.qahwagi.infra.core.repo.hibernate.vo.CustomerPersistable</class>
+    <class>me.kisoft.qahwagi.infra.core.repo.hibernate.vo.MenuItemPersistable</class>
+    <class>me.kisoft.qahwagi.infra.core.repo.hibernate.vo.OrderPersistable</class>
+    <class>me.kisoft.qahwagi.infra.core.repo.hibernate.vo.OrderedItemPersistable</class>
     <properties>
-      <property name="javax.persistence.jdbc.url" value="jdbc:derby:qahwagi_production;create=true"/>
+      <property name="hibernate.ogm.datastore.provider" value="MONGODB"/>
+      <property name="hibernate.ogm.datastore.database" value="TestDB"/>
+      <property name="hibernate.ogm.datastore.create_database" value="true"/>
+    </properties>
+  </persistence-unit>
+  <persistence-unit name="qahwagi_dev_PU" transaction-type="JTA">
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+    <class>me.kisoft.qahwagi.infra.auth.repo.hibernate.vo.UserPersistable</class>
+    <class>me.kisoft.qahwagi.infra.core.repo.hibernate.vo.BaristaPersistable</class>
+    <class>me.kisoft.qahwagi.infra.core.repo.hibernate.vo.CoffeeShopPersistable</class>
+    <class>me.kisoft.qahwagi.infra.core.repo.hibernate.vo.CustomerPersistable</class>
+    <class>me.kisoft.qahwagi.infra.core.repo.hibernate.vo.MenuItemPersistable</class>
+    <class>me.kisoft.qahwagi.infra.core.repo.hibernate.vo.OrderPersistable</class>
+    <class>me.kisoft.qahwagi.infra.core.repo.hibernate.vo.OrderedItemPersistable</class>
+    <properties>
+      <property name="javax.persistence.jdbc.url" value="jdbc:derby:qahwagi_dev;create=true"/>
       <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver"/>
       <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyDialect"/>
       <property name="hibernate.hbm2ddl.auto" value="update"/>
     </properties>
   </persistence-unit>
-  <persistence-unit name="qahwagi_test_PU" transaction-type="RESOURCE_LOCAL">
+  <persistence-unit name="qahwagi_test_PU" transaction-type="JTA">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+    <class>me.kisoft.qahwagi.infra.auth.repo.hibernate.vo.UserPersistable</class>
+    <class>me.kisoft.qahwagi.infra.core.repo.hibernate.vo.BaristaPersistable</class>
+    <class>me.kisoft.qahwagi.infra.core.repo.hibernate.vo.CoffeeShopPersistable</class>
+    <class>me.kisoft.qahwagi.infra.core.repo.hibernate.vo.CustomerPersistable</class>
+    <class>me.kisoft.qahwagi.infra.core.repo.hibernate.vo.MenuItemPersistable</class>
+    <class>me.kisoft.qahwagi.infra.core.repo.hibernate.vo.OrderPersistable</class>
+    <class>me.kisoft.qahwagi.infra.core.repo.hibernate.vo.OrderedItemPersistable</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:derby:memory:qahwagi_test;create=true"/>
       <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver"/>

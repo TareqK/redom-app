@@ -10,7 +10,6 @@ import javax.persistence.OneToOne;
 import lombok.Data;
 import me.kisoft.qahwagi.domain.core.entity.OrderedItem;
 import me.kisoft.qahwagi.infra.repo.hibernate.vo.HibernatePersistable;
-import org.apache.commons.lang3.math.NumberUtils;
 
 /**
  *
@@ -32,9 +31,9 @@ public class OrderedItemPersistable extends HibernatePersistable<OrderedItem> {
 
   @Override
   protected HibernatePersistable toPersistable(OrderedItem domainEntity) {
-    this.setId(NumberUtils.toLong(domainEntity.getId()));
+    this.setId(domainEntity.getId());
     this.menuItem = new MenuItemPersistable();
-    this.menuItem.setId(NumberUtils.toLong(domainEntity.getMenuItemId()));
+    this.menuItem.setId(domainEntity.getMenuItemId());
     return this;
   }
 

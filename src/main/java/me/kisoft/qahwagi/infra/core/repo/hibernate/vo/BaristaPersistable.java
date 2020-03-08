@@ -45,7 +45,7 @@ public class BaristaPersistable extends HibernatePersistable<Barista> implements
   @Override
   public Barista toDomainEntity() {
     Barista b = new Barista();
-    b.setId(String.valueOf(user.getId()));
+    b.setId(user.getId());
     b.setCoffeeShop(coffeeShop.toDomainEntity());
     return b;
   }
@@ -53,7 +53,7 @@ public class BaristaPersistable extends HibernatePersistable<Barista> implements
   @Override
   protected BaristaPersistable toPersistable(Barista domainEntity) {
     this.user = new UserPersistable();
-    this.user.setId(NumberUtils.toLong(domainEntity.getId()));
+    this.user.setId(domainEntity.getId());
     this.coffeeShop = new CoffeeShopPersistable().toPersistable(domainEntity.getCoffeeShop());
     this.coffeeShop.setBarista(this);
     return this;

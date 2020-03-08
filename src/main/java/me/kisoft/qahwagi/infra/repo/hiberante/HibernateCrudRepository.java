@@ -17,13 +17,14 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.transaction.TransactionManager;
+import lombok.SneakyThrows;
 import me.kisoft.qahwagi.domain.entity.QahwagiEntity;
 import me.kisoft.qahwagi.domain.repo.CrudRepository;
 import me.kisoft.qahwagi.infra.factory.EntityManagerFactory;
 import me.kisoft.qahwagi.infra.repo.hibernate.vo.HibernatePersistable;
 import me.kisoft.qahwagi.infra.vo.Transformable;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 
 /**
  *
@@ -65,24 +66,26 @@ public abstract class HibernateCrudRepository<T extends QahwagiEntity, P extends
 
   private P findPersistableById(String id) {
     try {
-      return getEm().find(getPersistable(), NumberUtils.toLong(id));
+      return getEm().find(getPersistable(), id);
     } catch (NoResultException ex) {
       return null;
     }
   }
 
+  @SneakyThrows
   @Override
   public T save(T toSave) {
     P persistable = convertToPersistable(toSave);
-    getEm().getTransaction().begin();
+    TransactionManager manager = getTransactionManager();
+    manager.begin();
     try {
       if (StringUtils.isBlank(toSave.getId())) {
-        em.persist(persistable);
+        getEm().persist(persistable);
       } else {
-        persistable = em.merge(persistable);
+        persistable = getEm().merge(persistable);
       }
     } finally {
-      getEm().getTransaction().commit();
+      manager.commit();
     }
     T newEntity = (T) ((Transformable) persistable).toDomainEntity();
     toSave.setId(newEntity.getId());
@@ -90,15 +93,17 @@ public abstract class HibernateCrudRepository<T extends QahwagiEntity, P extends
     return newEntity;
   }
 
+  @SneakyThrows
   @Override
   public T update(T toUpdate, String id) {
     toUpdate.setId(id);
     P persistable = convertToPersistable(toUpdate);
-    getEm().getTransaction().begin();
+    TransactionManager manager = getTransactionManager();
+    manager.begin();
     try {
-      persistable = em.merge(persistable);
+      persistable = getEm().merge(persistable);
     } finally {
-      getEm().getTransaction().commit();
+      manager.commit();
     }
     T newEntity = (T) ((Transformable) persistable).toDomainEntity();
     toUpdate.setId(newEntity.getId());
@@ -106,17 +111,19 @@ public abstract class HibernateCrudRepository<T extends QahwagiEntity, P extends
     return newEntity;
   }
 
+  @SneakyThrows
   @Override
   public void delete(String id) {
     P persistable = findPersistableById(id);
     if (persistable != null) {
-      getEm().getTransaction().begin();
+      TransactionManager manager = getTransactionManager();
+      manager.begin();
       try {
         if (persistable.getId() == null) {
-          em.remove(persistable);
+          getEm().remove(persistable);
         }
       } finally {
-        getEm().getTransaction().commit();
+        manager.commit();
       }
       ((Transformable) persistable).toDomainEntity().postDeleted();
     }
@@ -153,6 +160,10 @@ public abstract class HibernateCrudRepository<T extends QahwagiEntity, P extends
   @Override
   public void close() {
     getEm().close();
+  }
+
+  public TransactionManager getTransactionManager() {
+    return com.arjuna.ats.jta.TransactionManager.transactionManager();
   }
 
   public abstract Class<T> getType();

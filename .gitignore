@@ -1,3 +1,6 @@
 target/
 *.log
 qahwagi_production/
+qahwagi_dev/
+ObjectStore/
+PutObjectStoreDirHere/

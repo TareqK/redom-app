@@ -10,7 +10,6 @@ import me.kisoft.qahwagi.domain.core.entity.Barista;
 import me.kisoft.qahwagi.domain.core.repo.BaristaRepository;
 import me.kisoft.qahwagi.infra.core.repo.hibernate.vo.BaristaPersistable;
 import me.kisoft.qahwagi.infra.repo.hiberante.HibernateCrudRepository;
-import org.apache.commons.lang3.math.NumberUtils;
 
 /**
  *
@@ -31,7 +30,7 @@ public class BaristaRepositoryHibernateImpl extends HibernateCrudRepository<Bari
   private BaristaPersistable getPersistableByUserId(String userId) {
     try {
       return getEm().createNamedQuery("BaristaPersistable.byUserId", BaristaPersistable.class)
-       .setParameter("user_id", NumberUtils.toLong(userId))
+       .setParameter("user_id", userId)
        .getSingleResult();
     } catch (NoResultException ex) {
       return null;
