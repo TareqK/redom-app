@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package me.kisoft.qahwagi.infra.auth.service;
+package me.kisoft.qahwagi.infra.auth.service.impl;
 
 import lombok.SneakyThrows;
 import lombok.extern.java.Log;

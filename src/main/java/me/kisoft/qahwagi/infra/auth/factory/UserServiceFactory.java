@@ -6,7 +6,7 @@
 package me.kisoft.qahwagi.infra.auth.factory;
 
 import me.kisoft.qahwagi.domain.auth.service.UserService;
-import me.kisoft.qahwagi.infra.auth.service.UserServiceImpl;
+import me.kisoft.qahwagi.infra.auth.service.impl.UserServiceImpl;
 import me.kisoft.qahwagi.infra.factory.Factory;
 
 /**
