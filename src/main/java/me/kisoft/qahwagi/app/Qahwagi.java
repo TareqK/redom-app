@@ -39,14 +39,14 @@ public class Qahwagi {
   private static Javalin app;
 
   public static void main(String[] args) throws Throwable {
+    startServer();
+    registerDomainHandlers();
     String persistenceUnitName = "qahwagi_dev_PU";
-    if (Boolean.valueOf(System.getProperty("qahwagi.production", "false"))) {
+    if (Boolean.valueOf(System.getProperty("production", "false"))) {
       persistenceUnitName = "qahwagi_prod_PU";
     }
     EntityManagerFactory.getInstance().setPersistenceUnit(persistenceUnitName);
-    registerDomainHandlers();
     registerDerbyShutdownHook();
-    startServer();
   }
 
   public static UserRole getUserRole(Context ctx) {
@@ -129,10 +129,10 @@ public class Qahwagi {
       });
     });
 
-    if (Boolean.valueOf(System.getProperty("qahwagi.production", "false"))) {
+    if (Boolean.valueOf(System.getProperty("production", "false"))) {
       app.config.addStaticFiles("/webapp");
     } else {
-      app.config.addStaticFiles("./src/main/resources/webapp", Location.EXTERNAL);
+      app.config.addStaticFiles("./src/main/webapp/dist", Location.EXTERNAL);
     }
 
   }

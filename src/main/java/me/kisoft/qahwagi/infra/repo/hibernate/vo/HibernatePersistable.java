@@ -13,14 +13,12 @@ import lombok.Setter;
 import me.kisoft.qahwagi.domain.entity.QahwagiEntity;
 import me.kisoft.qahwagi.infra.vo.Transformable;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.envers.Audited;
 
 /**
  *
  * @author tareq
  * @param <T>
  */
-@Audited
 @MappedSuperclass
 public abstract class HibernatePersistable<T extends QahwagiEntity> implements Transformable<T> {
 

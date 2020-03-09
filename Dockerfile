@@ -4,5 +4,5 @@
 FROM adoptopenjdk:11.0.6_10-jre-hotspot
 
 COPY target/qahwagi-*.jar /qahwagi.jar
-
-CMD ["java","-jar","qahwagi.jar"]
+COPY target/lib ./lib
+CMD ["java","-jar","-Dproduction=true","qahwagi.jar"]
