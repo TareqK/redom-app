@@ -12,6 +12,7 @@ import static io.javalin.apibuilder.ApiBuilder.post;
 import static io.javalin.apibuilder.ApiBuilder.put;
 import static io.javalin.core.security.SecurityUtil.roles;
 import io.javalin.http.Context;
+import io.javalin.http.staticfiles.Location;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -127,8 +128,12 @@ public class Qahwagi {
         });
       });
     });
-    app.config.addStaticFiles("/webapp");
-    app.config.addSinglePageRoot("/", "/webapp/index.html");
+
+    if (Boolean.valueOf(System.getProperty("qahwagi.production", "false"))) {
+      app.config.addStaticFiles("/webapp");
+    } else {
+      app.config.addStaticFiles("./src/main/resources/webapp", Location.EXTERNAL);
+    }
 
   }
 
