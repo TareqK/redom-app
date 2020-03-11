@@ -5,15 +5,17 @@
  */
 package me.kisoft.qahwagi.infra.auth.repo.hibernate.vo;
 
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import lombok.Data;
 import me.kisoft.qahwagi.domain.auth.entity.User;
 import me.kisoft.qahwagi.domain.auth.entity.UserRole;
 import me.kisoft.qahwagi.infra.repo.hibernate.vo.HibernatePersistable;
-import org.apache.commons.lang3.math.NumberUtils;
 
 /**
  *
@@ -22,13 +24,14 @@ import org.apache.commons.lang3.math.NumberUtils;
 @Data
 @Entity
 @NamedQueries({
-  @NamedQuery(name = "UserPersistable.byUsername", query = "SELECT up from UserPersistable up WHERE up.username=(:username)")
+  @NamedQuery(name = "UserPersistable.byUsername", query = "SELECT up from UserPersistable up WHERE up.username = :username")
 })
-public class UserPersistable extends HibernatePersistable<User> {
+public class UserPersistable extends HibernatePersistable<User> implements Serializable {
 
   @Column(unique = true)
   private String username;
   private String password;
+  @Enumerated(EnumType.STRING)
   private UserRole userRole;
   private String name;
   private String telephoneNumber;

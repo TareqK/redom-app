@@ -13,6 +13,7 @@ import static io.javalin.apibuilder.ApiBuilder.put;
 import static io.javalin.core.security.SecurityUtil.roles;
 import io.javalin.http.Context;
 import io.javalin.http.staticfiles.Location;
+import java.io.File;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -28,6 +29,10 @@ import me.kisoft.qahwagi.infra.auth.service.rest.UserRestService;
 import me.kisoft.qahwagi.infra.core.service.rest.CoffeeShopRestService;
 import me.kisoft.qahwagi.infra.core.service.rest.OrderRestService;
 import me.kisoft.qahwagi.infra.factory.EntityManagerFactory;
+import org.eclipse.jetty.server.session.DefaultSessionCache;
+import org.eclipse.jetty.server.session.FileSessionDataStore;
+import org.eclipse.jetty.server.session.SessionCache;
+import org.eclipse.jetty.server.session.SessionHandler;
 
 /**
  *
@@ -39,13 +44,14 @@ public class Qahwagi {
   private static Javalin app;
 
   public static void main(String[] args) throws Throwable {
-    startServer();
-    registerDomainHandlers();
+
     String persistenceUnitName = "qahwagi_dev_PU";
-    if (Boolean.valueOf(System.getProperty("production", "false"))) {
+    if (Boolean.valueOf(System.getProperty("qahwagi.production", "false"))) {
       persistenceUnitName = "qahwagi_prod_PU";
     }
     EntityManagerFactory.getInstance().setPersistenceUnit(persistenceUnitName);
+    startServer();
+    registerDomainHandlers();
     registerDerbyShutdownHook();
   }
 
@@ -129,7 +135,13 @@ public class Qahwagi {
       });
     });
 
-    if (Boolean.valueOf(System.getProperty("production", "false"))) {
+    app.exception(Exception.class, (e, ctx) -> {
+      e.printStackTrace();
+      ctx.status(500);
+      ctx.result(e.getMessage());
+    });
+    app.config.sessionHandler(() -> fileSessionHandler());
+    if (Boolean.valueOf(System.getProperty("qahwagi.production", "false"))) {
       app.config.addStaticFiles("/webapp");
     } else {
       app.config.addStaticFiles("./src/main/webapp/dist", Location.EXTERNAL);
@@ -137,7 +149,27 @@ public class Qahwagi {
 
   }
 
+  private static SessionHandler fileSessionHandler() {
+    SessionHandler sessionHandler = new SessionHandler();
+    SessionCache sessionCache = new DefaultSessionCache(sessionHandler);
+    sessionCache.setSessionDataStore(fileSessionDataStore());
+    sessionHandler.setSessionCache(sessionCache);
+    sessionHandler.setHttpOnly(true);
+    // make additional changes to your SessionHandler here
+    return sessionHandler;
+  }
+
+  private static FileSessionDataStore fileSessionDataStore() {
+    FileSessionDataStore fileSessionDataStore = new FileSessionDataStore();
+    File baseDir = new File(System.getProperty("java.io.tmpdir"));
+    File storeDir = new File(baseDir, "javalin-session-store");
+    storeDir.mkdir();
+    fileSessionDataStore.setStoreDir(storeDir);
+    return fileSessionDataStore;
+  }
+
   public static void stopServer() {
     app.stop();
   }
+
 }

@@ -15,6 +15,12 @@
   <files>
     <file>
       <source> ${project.build.directory}/${project.artifactId}-${project.version}.jar</source>
+      <destName>${project.artifactId}.jar</destName>
+      <outputDirectory>/</outputDirectory>
+    </file>
+    <file>
+      <source> ${basedir}/src/scripts/start.sh</source>
+      <destName>start.sh</destName>
       <outputDirectory>/</outputDirectory>
     </file>
   </files>

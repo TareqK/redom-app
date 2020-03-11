@@ -12,7 +12,6 @@ import me.kisoft.qahwagi.domain.auth.service.UserService;
 import me.kisoft.qahwagi.infra.auth.factory.UserRepositoryFactory;
 import me.kisoft.qahwagi.infra.auth.factory.UserServiceFactory;
 import me.kisoft.qahwagi.infra.auth.service.rest.vo.SignInRequest;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -26,15 +25,13 @@ public class UserRestService {
     SignInRequest request = ctx.bodyAsClass(SignInRequest.class);
     User foundUser = userService.signIn(request.getUsername(), request.getPassword());
     if (foundUser != null) {
-      if (StringUtils.equals(request.getPassword(), foundUser.getPassword())) {
-        ctx.res.setStatus(200);
-        ctx.sessionAttribute("authenticated", true);
-        ctx.sessionAttribute("user", foundUser);
-        return;
-      }
-      ctx.res.setStatus(403);
+      ctx.req.getSession(true);
+      ctx.sessionAttribute("authenticated", true);
+      ctx.sessionAttribute("user", foundUser);
+      ctx.res.setStatus(200);
+      return;
     }
-
+    ctx.res.setStatus(403);
   }
 
   public void signUp(Context ctx) throws Exception {

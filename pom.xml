@@ -36,10 +36,7 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate.ogm</groupId>
-      <artifactId>hibernate-ogm-mongodb</artifactId>
+      <version>5.4.12.Final</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate.javax.persistence</groupId>
@@ -49,7 +46,7 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-envers</artifactId>
-      <version>5.3.6.Final</version>
+      <version>5.4.12.Final</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -71,11 +68,6 @@
       <groupId>org.jboss.narayana.jta</groupId>
       <artifactId>narayana-jta</artifactId>
       <version>5.4.0.Final</version>
-    </dependency>
-    <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
-      <version>8.0.19</version>
     </dependency>
     <dependency>
       <groupId>org.dizitart</groupId>
@@ -102,6 +94,11 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
       <version>1.8.0-beta4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mariadb.jdbc</groupId>
+      <artifactId>mariadb-java-client</artifactId>
+      <version>2.5.4</version>
     </dependency>
   </dependencies>
   <build>
@@ -248,15 +245,5 @@
       </plugin>
     </plugins>
   </build>
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.hibernate.ogm</groupId>
-        <artifactId>hibernate-ogm-bom</artifactId>
-        <version>5.4.1.Final</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
+
 </project>
