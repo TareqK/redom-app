@@ -48,7 +48,7 @@ public class CoffeeShopPersistable extends HibernatePersistable<CoffeeShop> {
   @Override
   public CoffeeShop toDomainEntity() {
     CoffeeShop cs = new CoffeeShop();
-    cs.setId(getId());
+    cs.setId(String.valueOf(getId()));
     cs.setName(name);
     cs.setLongitude(longitude);
     cs.setLatitude(latitude);
@@ -62,7 +62,7 @@ public class CoffeeShopPersistable extends HibernatePersistable<CoffeeShop> {
 
   @Override
   protected CoffeeShopPersistable toPersistable(CoffeeShop domainEntity) {
-    this.setId(domainEntity.getId());
+    this.setId(NumberUtils.toLong(domainEntity.getId()));
     this.name = domainEntity.getName();
     this.longitude = domainEntity.getLongitude();
     this.latitude = domainEntity.getLatitude();

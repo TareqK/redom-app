@@ -25,6 +25,7 @@ import me.kisoft.qahwagi.infra.factory.EntityManagerFactory;
 import me.kisoft.qahwagi.infra.repo.hibernate.vo.HibernatePersistable;
 import me.kisoft.qahwagi.infra.vo.Transformable;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 /**
  *
@@ -66,7 +67,7 @@ public abstract class HibernateCrudRepository<T extends QahwagiEntity, P extends
 
   private P findPersistableById(String id) {
     try {
-      return getEm().find(getPersistable(), id);
+      return getEm().find(getPersistable(), NumberUtils.toLong(id));
     } catch (NoResultException ex) {
       return null;
     }

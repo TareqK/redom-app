@@ -16,6 +16,7 @@ import lombok.Data;
 import me.kisoft.qahwagi.domain.auth.entity.User;
 import me.kisoft.qahwagi.domain.auth.entity.UserRole;
 import me.kisoft.qahwagi.infra.repo.hibernate.vo.HibernatePersistable;
+import org.apache.commons.lang3.math.NumberUtils;
 
 /**
  *
@@ -46,7 +47,7 @@ public class UserPersistable extends HibernatePersistable<User> implements Seria
   @Override
   public User toDomainEntity() {
     User u = new User();
-    u.setId(getId());
+    u.setId(String.valueOf(getId()));
     u.setUsername(username);
     u.setPassword(password);
     u.setUserRole(userRole);
@@ -57,7 +58,7 @@ public class UserPersistable extends HibernatePersistable<User> implements Seria
 
   @Override
   public UserPersistable toPersistable(User domainEntity) {
-    setId(domainEntity.getId());
+    setId(NumberUtils.toLong(domainEntity.getId()));
     this.username = domainEntity.getUsername();
     this.password = domainEntity.getPassword();
     this.userRole = domainEntity.getUserRole();

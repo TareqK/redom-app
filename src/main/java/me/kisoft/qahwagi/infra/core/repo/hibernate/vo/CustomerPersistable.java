@@ -13,6 +13,7 @@ import lombok.Data;
 import me.kisoft.qahwagi.domain.core.entity.Customer;
 import me.kisoft.qahwagi.infra.auth.repo.hibernate.vo.UserPersistable;
 import me.kisoft.qahwagi.infra.repo.hibernate.vo.HibernatePersistable;
+import org.apache.commons.lang3.math.NumberUtils;
 
 /**
  *
@@ -37,15 +38,15 @@ public class CustomerPersistable extends HibernatePersistable<Customer> {
   @Override
   public Customer toDomainEntity() {
     Customer c = new Customer();
-    c.setId(getId());
+    c.setId(String.valueOf(getId()));
     return c;
   }
 
   @Override
   protected CustomerPersistable toPersistable(Customer domainEntity) {
-    this.setId(domainEntity.getId());
+    this.setId(NumberUtils.toLong(domainEntity.getId()));
     this.user = new UserPersistable();
-    this.user.setId(domainEntity.getId());
+    this.user.setId(NumberUtils.toLong(domainEntity.getId()));
     return this;
   }
 

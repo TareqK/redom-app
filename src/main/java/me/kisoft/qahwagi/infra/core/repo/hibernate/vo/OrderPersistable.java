@@ -20,6 +20,7 @@ import me.kisoft.qahwagi.domain.core.entity.Order;
 import me.kisoft.qahwagi.domain.core.entity.OrderStatus;
 import me.kisoft.qahwagi.infra.auth.repo.hibernate.vo.UserPersistable;
 import me.kisoft.qahwagi.infra.repo.hibernate.vo.HibernatePersistable;
+import org.apache.commons.lang3.math.NumberUtils;
 
 /**
  *
@@ -51,7 +52,7 @@ public class OrderPersistable extends HibernatePersistable<Order> {
   @Override
   public Order toDomainEntity() {
     Order o = new Order();
-    o.setId(getId());
+    o.setId(String.valueOf(getId()));
     Customer c = new Customer();
     c.setId(user.toDomainEntity().getId());
     o.setCustomer(c);
@@ -64,9 +65,9 @@ public class OrderPersistable extends HibernatePersistable<Order> {
 
   @Override
   public OrderPersistable toPersistable(Order domainEntity) {
-    this.setId(domainEntity.getId());
+    this.setId(NumberUtils.toLong(domainEntity.getId()));
     this.user = new UserPersistable();
-    this.user.setId(domainEntity.getCustomer().getId());
+    this.user.setId(NumberUtils.toLong(domainEntity.getCustomer().getId()));
     this.coffeeShop = new CoffeeShopPersistable(domainEntity.getCoffeeShop());
     this.orderStatus = domainEntity.getOrderStatus();
     orderedItems = new ArrayList<>();

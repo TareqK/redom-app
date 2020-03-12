@@ -6,7 +6,6 @@
 package me.kisoft.qahwagi.infra.auth.repo.hibernate;
 
 import javax.persistence.NoResultException;
-import javax.transaction.TransactionManager;
 import lombok.SneakyThrows;
 import me.kisoft.qahwagi.domain.auth.entity.User;
 import me.kisoft.qahwagi.domain.auth.repo.UserRepository;
@@ -22,16 +21,12 @@ public class UserRepositoryHibernateImpl extends HibernateCrudRepository<User, U
   @SneakyThrows
   @Override
   public User getUserByUsername(String username) {
-    TransactionManager manager = getTransactionManager();
-    manager.begin();
     try {
       return getEm().createNamedQuery("UserPersistable.byUsername", UserPersistable.class)
        .setParameter("username", username)
        .getSingleResult().toDomainEntity();
     } catch (NoResultException ex) {
       return null;
-    } finally {
-      manager.commit();
     }
   }
 

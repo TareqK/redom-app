@@ -6,10 +6,13 @@
 package me.kisoft.qahwagi.infra.core.repo.hibernate;
 
 import javax.persistence.NoResultException;
+import javax.transaction.TransactionManager;
+import lombok.SneakyThrows;
 import me.kisoft.qahwagi.domain.core.entity.Barista;
 import me.kisoft.qahwagi.domain.core.repo.BaristaRepository;
 import me.kisoft.qahwagi.infra.core.repo.hibernate.vo.BaristaPersistable;
 import me.kisoft.qahwagi.infra.repo.hiberante.HibernateCrudRepository;
+import org.apache.commons.lang3.math.NumberUtils;
 
 /**
  *
@@ -30,13 +33,14 @@ public class BaristaRepositoryHibernateImpl extends HibernateCrudRepository<Bari
   private BaristaPersistable getPersistableByUserId(String userId) {
     try {
       return getEm().createNamedQuery("BaristaPersistable.byUserId", BaristaPersistable.class)
-       .setParameter("user_id", userId)
+       .setParameter("user_id", NumberUtils.toLong(userId))
        .getSingleResult();
     } catch (NoResultException ex) {
       return null;
     }
   }
 
+  @SneakyThrows
   @Override
   public Barista update(Barista toUpdate, String id) {
     toUpdate.setId(id);
@@ -44,11 +48,12 @@ public class BaristaRepositoryHibernateImpl extends HibernateCrudRepository<Bari
     if (foundBarista != null) {
       BaristaPersistable updatedBarista = new BaristaPersistable(toUpdate);
       updatedBarista.setId(foundBarista.getId());
-      getEm().getTransaction().begin();
+      TransactionManager manager = getTransactionManager();
+      manager.begin();
       try {
         getEm().merge(updatedBarista);
       } finally {
-        getEm().getTransaction().commit();
+        manager.commit();
       }
       toUpdate = updatedBarista.toDomainEntity();
       toUpdate.postUpdated();
@@ -56,15 +61,17 @@ public class BaristaRepositoryHibernateImpl extends HibernateCrudRepository<Bari
     return toUpdate;
   }
 
+  @SneakyThrows
   @Override
   public void delete(String id) {
     BaristaPersistable foundBarista = getPersistableByUserId(id);
     if (foundBarista != null) {
-      getEm().getTransaction().begin();
+      TransactionManager manager = getTransactionManager();
+      manager.begin();
       try {
         getEm().remove(foundBarista);
       } finally {
-        getEm().getTransaction().commit();
+        manager.commit();
       }
       foundBarista.toDomainEntity().postDeleted();
     }
