@@ -10,7 +10,7 @@
     <class>me.kisoft.qahwagi.infra.core.repo.hibernate.vo.OrderPersistable</class>
     <class>me.kisoft.qahwagi.infra.core.repo.hibernate.vo.OrderedItemPersistable</class>
     <properties>
-      <property name="javax.persistence.jdbc.url" value="jdbc:mariadb://localhost:3306/qahwagi"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mariadb://127.0.0.1:3306/qahwagi"/>
       <property name="javax.persistence.jdbc.user" value="qahwagi"/>
       <property name="javax.persistence.jdbc.password" value="qahwagi"/>
       <property name="javax.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver"/>
