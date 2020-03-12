@@ -144,7 +144,7 @@ public class Qahwagi {
     if (Boolean.valueOf(System.getProperty("qahwagi.production", "false"))) {
       app.config.addStaticFiles("/webapp");
     } else {
-      app.config.addStaticFiles("./src/main/webapp/dist", Location.EXTERNAL);
+      app.config.addStaticFiles("./src/main/webapp/build", Location.EXTERNAL);
     }
 
   }
