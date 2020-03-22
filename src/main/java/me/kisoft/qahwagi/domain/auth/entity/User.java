@@ -5,6 +5,7 @@
  */
 package me.kisoft.qahwagi.domain.auth.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import me.kisoft.qahwagi.domain.entity.QahwagiEntity;
 import me.kisoft.qahwagi.domain.event.DomainEvent;
@@ -24,6 +25,10 @@ public class User implements QahwagiEntity {
   private String name;
   private String telephoneNumber;
 
+  @JsonIgnore
+  public String getPassword(){
+      return this.password;
+  }
   @Override
   public void postDeleted() {
     EventBus.getInstance().post(new DomainEvent("userDeleted", this));

@@ -28,6 +28,7 @@ public class UserRestService {
       ctx.req.getSession(true);
       ctx.sessionAttribute("authenticated", true);
       ctx.sessionAttribute("user", foundUser);
+      ctx.json(foundUser);
       ctx.res.setStatus(200);
       return;
     }
