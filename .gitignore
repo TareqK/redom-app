@@ -4,3 +4,7 @@ qahwagi_production/
 qahwagi_dev/
 ObjectStore/
 PutObjectStoreDirHere/
+/src/main/webapp/dist/
+/src/main/webapp/node_modules/
+/src/main/webapp/node/
+/src/main/webapp/docs/
