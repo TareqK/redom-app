@@ -49,7 +49,7 @@ export class SignUp {
                             ]),
 
                             el('div.form-group .row', [
-                                el('.col-12 .px-0 .mx-0 .d-flex .justify-content-end', [
+                                el('.col-12 .d-flex .justify-content-end', [
                                     el('button.btn .btn-primary', 'Sign Up', {type: 'submit'})
                                 ])
                             ])

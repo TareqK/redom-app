@@ -29,10 +29,10 @@ export class Login {
                                     }})
                             ]),
                             el('div.form-group .row', [
-                                el('.col-6 .px-0 .mx-0 .d-flex .justify-content-start', [
+                                el('.col-6 .d-flex .justify-content-start', [
                                     el('a', 'Sign Up', {href: "/#signup"})
                                 ]),
-                                el('.col-6 .px-0 .mx-0 .d-flex .justify-content-end', [
+                                el('.col-6 .d-flex .justify-content-end', [
                                     el('button.btn .btn-primary', 'Sign In', {type: 'submit'})
                                 ])
                             ])
@@ -64,8 +64,8 @@ export class Login {
 
             }
         }).then((res) => {
-             localStorage.setItem('role',res.userRole)
-             localStorage.setItem('auth',true)
+            localStorage.setItem('role', res.userRole)
+            localStorage.setItem('auth', true)
             if (res.userRole == "ROLE_BARISTA") {
                 goto('myshop')
             } else {
