@@ -27,8 +27,9 @@ export class App {
 
     /**
      * 
-     * @param {type} middlewares a list of functions to execute in order before routing. If a function returns false, then the routing will not continue and the view will not change,
-     * and all other middlewares after will not be called
+     * @param {type} middlewares a list of functions to execute in order before routing.
+     *  If a middleware returns a name of a view differnt than the current target, then the following
+     *  middlewares will not be called and a redirect to the returned view is done.
      * @returns {App}
      */
     middlewares(middlewares) {
@@ -60,8 +61,7 @@ export class App {
     }
     /**
      * Routes to the new view. If it is the same as the current view, middleware execution is 
-     * skipped. Otherwise, middlewares are executed. If the middleware fails, then the current 
-     * view is refreshed
+     * skipped. Otherwise, middlewares are executed.
      * @returns {undefined}
      */
     _doRoute() {
@@ -73,9 +73,12 @@ export class App {
         })
         if (this.app.Views[view]) {
             if (view !== this.currentView) {
-                if (this._execMiddleware(this.currentView, view, params) == true) {
-                    this.currentView = view
-                    this.app.update(view, params)
+                let result = this._execMiddleware(this.currentView, view, params);
+                if (result && result) {
+                     goto(result,params)
+                }else{
+                   this.currentView = view
+                   this.app.update(view, params)
                 }
             } else {
                 this.currentView = view
@@ -87,8 +90,9 @@ export class App {
     }
 
     /**
-     * Executes middlewares. if a middleware returns false, then the current 
-     * view is refreshed
+     * Executes middlewares. if a middleware returns the name of the view other
+     * than the current view, then the following middlewares will not be executed
+     * and a redirect to the returned view is done
      * @param {type} currentView
      * @param {type} newView
      * @param {type} params
@@ -98,14 +102,14 @@ export class App {
         if (this.middlewareList.length > 0) {
             let i = 0;
             for (i in this.middlewareList) {
-                if (this.middlewareList[i].exec(currentView, newView, params) == false) {
-                    goto(currentView, params);
-                    return false
+                let result = this.middlewareList[i].exec(currentView, newView, params);
+                if (result && result != newView) {
+                    return result
                 }
+               
             }
         }
-        return true;
-    }
+    }  
 
 }
 
