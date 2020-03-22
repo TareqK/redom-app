@@ -1,12 +1,12 @@
 import { router, mount} from 'redom'
 
-/**
- * A Simple App with a simple router
- * @type type
- */
+        /**
+         * A Simple App with a simple router
+         * @type type
+         */
 export class App {
     constructor() {
-
+        this.middlewareList = []
     }
     /**
      * 
@@ -20,6 +20,20 @@ export class App {
             this.defaultRoute = defaultRoute
         } else {
             this.defaultRoute = 'default'
+        }
+        this.currentView = this.defaultRoute
+        return this
+    }
+
+    /**
+     * 
+     * @param {type} middlewares a list of functions to execute in order before routing. If a function returns false, then the routing will not continue and the view will not change,
+     * and all other middlewares after will not be called
+     * @returns {App}
+     */
+    middlewares(middlewares) {
+        if (middlewares) {
+            this.middlewareList = middlewares
         }
         return this
     }
@@ -36,21 +50,61 @@ export class App {
         } else {
             mount(document.body, this.app);
         }
-        window.onhashchange = this._doRoute()
-        window.onload = this._doRoute()
+        window.onhashchange = (e) => {
+            this._doRoute()
+        }
+        window.onload = (e) => {
+            this._doRoute()
+        }
         return this
     }
-
+    /**
+     * Routes to the new view. If it is the same as the current view, middleware execution is 
+     * skipped. Otherwise, middlewares are executed. If the middleware fails, then the current 
+     * view is refreshed
+     * @returns {undefined}
+     */
     _doRoute() {
         let routeUrl = window.location.hash.substr(1).split('/')
         let view = routeUrl[0]
         let paramString = window.location.hash.substr(1 + view.length)
-        let params = routeUrl.splice(1, routeUrl.length)
+        let params = routeUrl.splice(1, routeUrl.length).filter((param) => {
+            return param.length > 0;
+        })
         if (this.app.Views[view]) {
-            this.app.update(view, params)
+            if (view !== this.currentView) {
+                if (this._execMiddleware(this.currentView, view, params) == true) {
+                    this.currentView = view
+                    this.app.update(view, params)
+                }
+            } else {
+                this.currentView = view
+                this.app.update(view, params)
+            }
         } else {
             window.location.hash = this.defaultRoute + paramString
         }
+    }
+
+    /**
+     * Executes middlewares. if a middleware returns false, then the current 
+     * view is refreshed
+     * @param {type} currentView
+     * @param {type} newView
+     * @param {type} params
+     * @returns {Boolean}
+     */
+    _execMiddleware(currentView, newView, params) {
+        if (this.middlewareList.length > 0) {
+            let i = 0;
+            for (i in this.middlewareList) {
+                if (this.middlewareList[i].exec(currentView, newView, params) == false) {
+                    goto(currentView, params);
+                    return false
+                }
+            }
+        }
+        return true;
     }
 
 }
