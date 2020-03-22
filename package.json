@@ -1,6 +1,6 @@
 {
     "name": "redom-router",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "A Simple Router for the RE:DOM library",
     "main": "index.js",
     "repository": {
