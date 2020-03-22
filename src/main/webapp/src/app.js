@@ -4,21 +4,26 @@ import './styles/bootstrap.min.css';
 import {App, goto} from 'redom-router';
 class Home {
     constructor() {
-        this.el = el("h1", "home");
+        this.el = el('div', [
+            el('h1','home'),
+            el('button','auth me',{onclick:(e)=>{localStorage.setItem("auth",true);goto('admin')}}),
+            el('button','dont auth me',{onclick:(e)=>{localStorage.removeItem("auth");goto('admin')}})
+        ]);
     }
 
     update(data) {
-        console.log(data);
     }
 }
 
 class Admin {
     constructor() {
-        this.el = el("h1", "admin");
+        this.el = el('div',[
+            el("h1", "admin"),
+             el('button','Go Home',{onclick:(e)=>{localStorage.removeItem("auth");goto('home')}})
+        ]);
     }
 
     update(data) {
-        console.log(data);
     }
 }
 
@@ -28,11 +33,12 @@ class AdminMiddleware {
     }
 
     exec(currentView, nextView, params) {
-        if (nextView == 'admin') {
-            return true;
-        } else {
-            return false;
+        if (localStorage.getItem('auth') == undefined && nextView != 'home') {
+             alert("You tried to redirect when you are not authenticated !")
+             return 'home'
         }
+        return nextView
+       
     }
 
 }
