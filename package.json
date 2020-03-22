@@ -1,14 +1,18 @@
 {
-  "name": "redom-router",
-  "version": "1.0.0",
-  "description": "A Simple Router for the RE:DOM library",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Tareq Kirresh",
-  "license": "MIT",
-  "dependencies": {
-    "redom": "^3.26.0"
-  }
+    "name": "redom-router",
+    "version": "1.0.0",
+    "description": "A Simple Router for the RE:DOM library",
+    "main": "index.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/TareqK/redom-router.git"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Tareq Kirresh",
+    "license": "MIT",
+    "dependencies": {
+        "redom": "^3.26.0"
+    }
 }
