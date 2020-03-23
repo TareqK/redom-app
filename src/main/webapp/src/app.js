@@ -1,6 +1,7 @@
 import { router, mount, el, text} from 'redom'
 import './style/app.css'
 import './style/bootstrap.min.css'
+import 'leaflet/dist/leaflet.css' 
 import {App, goto} from 'redom-router'
 import {Sidebar} from './component/sidebar'
 import {Content} from './component/content'
@@ -9,10 +10,12 @@ import {MyShop} from './view/myshop'
 import {Main} from './view/main'
 import {Login} from './view/login'
 import {SignUp} from './view/signup'
-        const header = el('nav.navbar')
+import * as L from 'leaflet' 
+
+const header = el('nav.navbar')
 const sidebar = new Sidebar()
 const content = new Content();
-localStorage.removeItem('role')
+localStorage.removeItem('role') 
 localStorage.setItem('auth', 'false')
 class SidebarMiddleware {
     constructor(sidebar, content) {
