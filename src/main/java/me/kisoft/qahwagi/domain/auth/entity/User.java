@@ -29,6 +29,10 @@ public class User implements QahwagiEntity {
   public String getPassword(){
       return this.password;
   }
+  
+  public void setPassword(String password){
+      this.password = password;
+  }
   @Override
   public void postDeleted() {
     EventBus.getInstance().post(new DomainEvent("userDeleted", this));

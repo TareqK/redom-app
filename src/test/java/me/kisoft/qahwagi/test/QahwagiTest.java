@@ -28,70 +28,71 @@ import org.junit.BeforeClass;
  * @author tareq
  */
 @Log
-public class QahwagiTest {
+public abstract class QahwagiTest {
 
-  @BeforeClass
-  public static final void initTest() {
-    java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.OFF);
-    EntityManagerFactory.getInstance().setPersistenceUnit("qahwagi_test_PU");
-    EventBus.getInstance().searchForHandlers();
-    Qahwagi.startServer();
-    RestAssured.port = 7000;
-    RestAssured.baseURI = "http://localhost";
-    createTestUsers();
-  }
+    @BeforeClass
+    public static final void initTest() {
+        EventBus.getInstance().searchForHandlers();
+        Qahwagi.startServer();
+        java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.FINEST);
+        EntityManagerFactory.getInstance().setPersistenceUnit("qahwagi_test_PU");
 
-  @AfterClass
-  public static final void destroyTest() {
-    EventBus.getInstance().removeHandlers();
-    try {
-      String jdbc = String.valueOf(EntityManagerFactory.getInstance().get().getEntityManagerFactory().getProperties().get("javax.persistence.jdbc.url"));
-      DriverManager.getConnection(jdbc + ";shutdown=true");
-    } catch (SQLException ex) {
-      log.info("Database Shutdown");
-    } finally {
-      Qahwagi.stopServer();
+        RestAssured.port = 7000;
+        RestAssured.baseURI = "http://localhost";
+        createTestUsers();
     }
-  }
 
-  public static void createTestUsers() {
-    createBaristaUser("barista", "barista");
-    createCustomerUser("customer", "customer");
-  }
+    @AfterClass
+    public static final void destroyTest() {
+        EventBus.getInstance().removeHandlers();
+        try {
+            String jdbc = String.valueOf(EntityManagerFactory.getInstance().get().getEntityManagerFactory().getProperties().get("javax.persistence.jdbc.url"));
+            DriverManager.getConnection(jdbc + ";shutdown=true");
+        } catch (SQLException ex) {
+            log.info("Database Shutdown");
+        } finally {
+            Qahwagi.stopServer();
+        }
+    }
 
-  public static void createBaristaUser(String username, String password) {
-    createUser(username, password, UserRole.ROLE_BARISTA);
-  }
+    public static void createTestUsers() {
+        createBaristaUser("barista", "barista");
+        createCustomerUser("customer", "customer");
+    }
 
-  public static void createCustomerUser(String username, String password) {
-    createUser(username, password, UserRole.ROLE_CUSTOMER);
-  }
+    public static void createBaristaUser(String username, String password) {
+        createUser(username, password, UserRole.ROLE_BARISTA);
+        System.out.println("Created Barista Test User");
+    }
 
-  public static void createUser(String username, String password, UserRole role) {
-    User toCreate = new User();
-    toCreate.setUserRole(role);
-    toCreate.setUsername(username);
-    toCreate.setPassword(password);
-    given().when().body(toCreate).post("/user/signup").then().statusCode(200);
-  }
+    public static void createCustomerUser(String username, String password) {
+        createUser(username, password, UserRole.ROLE_CUSTOMER);
+        System.out.println("Created Customer Test User");
+    }
 
-  public static RequestSpecification asCustomer() {
-    SignInRequest request = new SignInRequest();
-    request.setUsername("customer");
-    request.setPassword("customer");
-    Response post = given().when().body(request).post("/user/signin");
-    post.then().statusCode(200);
-    Cookie jsession = post.getDetailedCookie("JSESSIONID");
-    return given().cookie(jsession);
-  }
+    public static void createUser(String username, String password, UserRole role) {
+        User toCreate = new User();
+        toCreate.setUserRole(role);
+        toCreate.setUsername(username);
+        toCreate.setPassword(password);
+        given().when().body(toCreate).post("/user/signup").then().statusCode(200);
+    }
 
-  public static RequestSpecification asBarista() {
-    SignInRequest request = new SignInRequest();
-    request.setUsername("barista");
-    request.setPassword("barista");
-    Response post = given().when().body(request).post("/user/signin");
-    post.then().statusCode(200);
-    Cookie jsession = post.getDetailedCookie("JSESSIONID");
-    return given().cookie(jsession);
-  }
+    public static RequestSpecification asCustomer() {
+        SignInRequest request = new SignInRequest();
+        request.setUsername("customer");
+        request.setPassword("customer");
+        Response post = given().when().body(request).post("/user/signin");
+        post.then().statusCode(200);
+        return given().cookies(post.getCookies());
+    }
+
+    public static RequestSpecification asBarista() {
+        SignInRequest request = new SignInRequest();
+        request.setUsername("barista");
+        request.setPassword("barista");
+        Response post = given().when().body(request).post("/user/signin");
+        post.then().statusCode(200);
+        return given().cookies(post.getCookies());
+    }
 }
