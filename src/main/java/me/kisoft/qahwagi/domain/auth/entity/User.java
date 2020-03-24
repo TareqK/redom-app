@@ -6,6 +6,7 @@
 package me.kisoft.qahwagi.domain.auth.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import me.kisoft.qahwagi.domain.entity.QahwagiEntity;
 import me.kisoft.qahwagi.domain.event.DomainEvent;
@@ -20,6 +21,7 @@ public class User implements QahwagiEntity {
 
   private String id;
   private String username;
+  @JsonProperty
   private String password;
   private UserRole userRole;
   private String name;
@@ -30,6 +32,7 @@ public class User implements QahwagiEntity {
       return this.password;
   }
   
+  @JsonProperty
   public void setPassword(String password){
       this.password = password;
   }
