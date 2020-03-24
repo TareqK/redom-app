@@ -1,3 +1,4 @@
+[![npm version](https://badge.fury.io/js/redom-app.svg)](https://badge.fury.io/js/redom-app)
 # Redom App
 A simple Single Page Application Framework Built on the [RE:DOM](https://github.com/redom/redom)
 library.
