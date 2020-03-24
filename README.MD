@@ -75,6 +75,13 @@ const app = new App().routes({
     default: Home,
 }).middlewares([new SomeMiddleware()]).start()
 ```
+
+## Example URLs
+* ```http://mysite.com/#default ```
+* ```http://mysite.com/#orders/1243-234-134-1234/delivery ```
+* ```http://mysite.com/#my-profile/edit ```
+
+
 ## More Examples
 Examples can be found in [here](https://github.com/TareqK/redom-app/blob/master/example/app.js)
 
