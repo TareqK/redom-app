@@ -1,11 +1,11 @@
 {
-    "name": "redom-router",
-    "version": "1.0.2",
-    "description": "A Simple Router for the RE:DOM library",
-    "main": "index.js",
+    "name": "redom-app",
+    "version": "1.0.0",
+    "description": "Simple Single Page Applications using RE:DOM",
+    "main": "redom-app.js",
     "repository": {
         "type": "git",
-        "url": "https://github.com/TareqK/redom-router.git"
+        "url": "https://github.com/TareqK/redom-app.git"
     },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
