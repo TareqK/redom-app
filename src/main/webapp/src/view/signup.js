@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 import {el} from 'redom'
-import {goto} from 'redom-router'
+import {goto} from 'redom-app'
 export class SignUp {
     constructor() {
         this.el = el('div.login .row',

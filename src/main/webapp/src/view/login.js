@@ -6,7 +6,7 @@
 
 
 import {el} from 'redom'
-import {goto} from 'redom-router'
+import {goto} from 'redom-app'
 export class Login {
     constructor() {
         this.el = el('div.login .row',
