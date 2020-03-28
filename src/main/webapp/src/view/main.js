@@ -61,7 +61,6 @@ export class Main {
                     if (shop.name && shop.takingOrders == true) {
                         L.marker([shop.latitude, shop.longitude]).addTo(this.map)
                                 .bindPopup(new ShopOverview(shop).el)
-                                .openPopup()
                     }
                 })
             }

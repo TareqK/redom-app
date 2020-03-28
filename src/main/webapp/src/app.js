@@ -10,6 +10,7 @@ import {MyShop} from './view/myshop'
 import {Main} from './view/main'
 import {Login} from './view/login'
 import {SignUp} from './view/signup'
+import {Shop} from './view/shop'
 import * as L from 'leaflet' 
 
 const header = el('nav.navbar')
@@ -55,6 +56,7 @@ mount(document.body, page)
 
 const app = new App().routes({
     orders: Orders,
+    shop:Shop,
     myshop: MyShop,
     main: Main,
     default: Login,

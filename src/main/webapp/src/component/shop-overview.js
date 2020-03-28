@@ -5,6 +5,7 @@
  */
 import {el} from 'redom'
 import {getBase64Url} from '../utils/utils'
+import {goto} from 'redom-app'
 export class ShopOverview {
     constructor(shopData) {
         this.data = shopData
@@ -15,25 +16,20 @@ export class ShopOverview {
             ]),
             el('div.shop-content', {}, [
                 el('img.shop-image', {src: this.data.image}),
-                el('div', {}, [
-                    el('h5', this.data.telephoneNumber)
+                el('p', {}, [
+                    el('p', this.data.address),
+                    el('strong', 'telephone : ' + this.data.telephoneNumber)
                 ])]),
             el('div.shop-footer', [
-                this.button = el('button.order-button', 'Order Now', {
+
+                this.orderButton = el('button.order-button .btn .btn-primary', 'Order Now', {
                     onclick: (e) => {
-                        console.log(e);
+                        goto('shop',[this.data.id,'order'])
                     }
                 })
             ])
 
         ])
-        if (this.data.takingOrders === false) {
-            this.el.classList.add('inactive')
-            this.button.setAttribute('disabled', true)
-        } else {
-            this.el.classList.remove('inactive')
-            this.button.removeAttribute('disabled')
-        }
 
     }
 }
