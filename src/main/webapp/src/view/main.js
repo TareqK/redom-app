@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-import {el} from 'redom'
+import {el,text} from 'redom'
 
 import * as L from 'leaflet'
+import {ShopOverview} from '../component/shop-overview'
 export class Main {
     constructor() {
         this.el = el('div#main')
@@ -19,24 +20,25 @@ export class Main {
 
     }
     update(params) {
-        navigator.geolocation.getCurrentPosition((position) => {
-            this.map = L.map('main').setView([position.coords.latitude, position.coords.longitude], 13);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(this.map)
-            this.getShops()
+        
+        navigator.geolocation.getCurrentPosition((position) => {          
+            this.startMap(position.coords.latitude, position.coords.longitude)
         }, (e) => {
-            this.map = L.map('main').setView([31.771959, 35.217018], 13);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(this.map)
-            this.getShops()
+            this.startMap(31.771959, 35.217018)
         }, {
             enableHighAccuracy: true,
-            timeout: 5000,
+            timeout: 10000,
             maximumAge: 0
         });
 
+    }
+    
+    startMap(latitude,longitude){
+         this.map = L.map('main').setView([latitude, longitude], 18);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(this.map)
+            this.getShops()
     }
 
     getShops() {
@@ -58,7 +60,7 @@ export class Main {
                 res.map((shop) => {
                     if (shop.name && shop.takingOrders == true) {
                         L.marker([shop.latitude, shop.longitude]).addTo(this.map)
-                                .bindPopup(shop.name)
+                                .bindPopup(new ShopOverview(shop).el)
                                 .openPopup()
                     }
                 })

@@ -27,6 +27,7 @@ public class CoffeeShop implements QahwagiEntity {
   private String telephoneNumber;
   private double servingRadius;
   private boolean takingOrders;
+  private String image;
   private List<MenuItem> offerings = new ArrayList<>();
 
   @Override

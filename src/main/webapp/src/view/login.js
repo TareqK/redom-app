@@ -7,6 +7,7 @@
 
 import {el} from 'redom'
 import {goto} from 'redom-app'
+import {toBase64} from '../utils/utils'
 export class Login {
     constructor() {
         this.el = el('div.login .row',

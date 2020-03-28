@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import lombok.Data;
@@ -25,55 +27,61 @@ import org.apache.commons.lang3.math.NumberUtils;
 @Entity
 public class CoffeeShopPersistable extends HibernatePersistable<CoffeeShop> {
 
-  private String name;
-  private double longitude;
-  private double latitude;
-  private String telephoneNumber;
-  private double servingRadius;
-  private boolean takingOrders;
+    private String name;
+    private double longitude;
+    private double latitude;
+    private String telephoneNumber;
+    private double servingRadius;
+    private boolean takingOrders;
 
-  @OneToOne(cascade = CascadeType.ALL)
-  private BaristaPersistable barista;
+    @Lob
+    @Column(length = 6000000)
+    private String image;
 
-  @OneToMany(cascade = CascadeType.ALL)
-  private List<MenuItemPersistable> offerings;
+    @OneToOne(cascade = CascadeType.ALL)
+    private BaristaPersistable barista;
 
-  public CoffeeShopPersistable(CoffeeShop domainEntity) {
-    super(domainEntity);
-  }
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<MenuItemPersistable> offerings;
 
-  public CoffeeShopPersistable() {
-  }
+    public CoffeeShopPersistable(CoffeeShop domainEntity) {
+        super(domainEntity);
+    }
 
-  @Override
-  public CoffeeShop toDomainEntity() {
-    CoffeeShop cs = new CoffeeShop();
-    cs.setId(String.valueOf(getId()));
-    cs.setName(name);
-    cs.setLongitude(longitude);
-    cs.setLatitude(latitude);
-    cs.setTelephoneNumber(telephoneNumber);
-    cs.setServingRadius(servingRadius);
-    cs.setTakingOrders(takingOrders);
-    cs.setOfferings(offerings.parallelStream().map(MenuItemPersistable::toDomainEntity).collect(Collectors.toList()));
-    return cs;
+    public CoffeeShopPersistable() {
+    }
 
-  }
+    @Override
+    public CoffeeShop toDomainEntity() {
+        CoffeeShop cs = new CoffeeShop();
+        cs.setId(String.valueOf(getId()));
+        cs.setName(name);
+        cs.setLongitude(longitude);
+        cs.setLatitude(latitude);
+        cs.setTelephoneNumber(telephoneNumber);
+        cs.setServingRadius(servingRadius);
+        cs.setTakingOrders(takingOrders);
+        cs.setOfferings(offerings.parallelStream().map(MenuItemPersistable::toDomainEntity).collect(Collectors.toList()));
+        cs.setImage(this.image);
+        return cs;
 
-  @Override
-  protected CoffeeShopPersistable toPersistable(CoffeeShop domainEntity) {
-    this.setId(NumberUtils.toLong(domainEntity.getId()));
-    this.name = domainEntity.getName();
-    this.longitude = domainEntity.getLongitude();
-    this.latitude = domainEntity.getLatitude();
-    this.telephoneNumber = domainEntity.getTelephoneNumber();
-    this.servingRadius = domainEntity.getServingRadius();
-    this.takingOrders = domainEntity.isTakingOrders();
-    this.offerings = new ArrayList<>();
-    domainEntity.getOfferings().parallelStream().forEach(cnsmr -> {
-      this.offerings.add(new MenuItemPersistable(cnsmr));
-    });
-    return this;
-  }
+    }
+
+    @Override
+    protected CoffeeShopPersistable toPersistable(CoffeeShop domainEntity) {
+        this.setId(NumberUtils.toLong(domainEntity.getId()));
+        this.name = domainEntity.getName();
+        this.longitude = domainEntity.getLongitude();
+        this.latitude = domainEntity.getLatitude();
+        this.telephoneNumber = domainEntity.getTelephoneNumber();
+        this.servingRadius = domainEntity.getServingRadius();
+        this.takingOrders = domainEntity.isTakingOrders();
+        this.offerings = new ArrayList<>();
+        domainEntity.getOfferings().parallelStream().forEach(cnsmr -> {
+            this.offerings.add(new MenuItemPersistable(cnsmr));
+        });
+        this.image = domainEntity.getImage();
+        return this;
+    }
 
 }
