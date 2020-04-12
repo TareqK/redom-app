@@ -85,5 +85,3 @@ const app = new App().routes({
 
 ## More Examples
 Examples can be found in [here](https://github.com/TareqK/redom-app/blob/master/example/app.js)
-
-## This is a  Markdown Change
