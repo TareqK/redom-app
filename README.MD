@@ -3,7 +3,7 @@
 A simple Single Page Application Framework Built on the [RE:DOM](https://github.com/redom/redom)
 library.
 
-## installation
+## Installation
 
 ```bash
  npm install redom-app
@@ -85,3 +85,11 @@ const app = new App().routes({
 
 ## More Examples
 Examples can be found in [here](https://github.com/TareqK/redom-app/blob/master/example/app.js)
+
+## TypeScript
+aodjfkoajdfpoasdf aiosdfj aoisdjf oaisjdfo iajsdfoi jasdif
+```javascript
+loader : [
+ 'typescipt':{'param1':stuff}
+]
+```
