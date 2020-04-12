@@ -85,11 +85,3 @@ const app = new App().routes({
 
 ## More Examples
 Examples can be found in [here](https://github.com/TareqK/redom-app/blob/master/example/app.js)
-
-## TypeScript
-aodjfkoajdfpoasdf aiosdfj aoisdjf oaisjdfo iajsdfoi jasdif
-```javascript
-loader : [
- 'typescipt':{'param1':stuff}
-]
-```
